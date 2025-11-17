@@ -5,7 +5,8 @@ export default function UpcomingAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
-  const API_BASE = "http://localhost:6060/appointments";
+//   const API_BASE = "http://localhost:6060/appointments";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchAppointments = async () => {

@@ -9,7 +9,8 @@ export default function FeedbackForm({ doctorId, appointmentId }) {
   const [message, setMessage] = useState("");
 
   const token = localStorage.getItem("token");
-  const API_BASE = "http://localhost:6060/feedback";
+//   const API_BASE = "http://localhost:6060/feedback";
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
   // ✅ Fetch doctor feedbacks
   useEffect(() => {

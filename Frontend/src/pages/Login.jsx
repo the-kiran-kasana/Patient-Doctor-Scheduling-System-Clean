@@ -6,13 +6,16 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
+//   const API_BASE = "http://localhost:6060";
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
+
     try {
-      const response = await fetch("http://localhost:6060/auth/login", {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

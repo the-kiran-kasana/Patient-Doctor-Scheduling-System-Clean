@@ -16,12 +16,13 @@ function Header() {
 
         {/* Navigation */}
         <nav className="hidden md:flex space-x-8 text-white font-medium">
-          <a href="/dashboard" className="hover:text-yellow-300 transition-colors duration-200"><Link to="/BookAppointment" className="text-white-600 hover:text-yellow-300 transition-colors">Dashboard</Link> </a>
+         <a href="/Home" className="hover:text-yellow-300 transition-colors duration-200"><Link to="/" className="text-white-600 hover:text-yellow-300 transition-colors">Home</Link> </a>
+          <a href="/dashboard" className="hover:text-yellow-300 transition-colors duration-200"><Link to="/PatientDashboard" className="text-white-600 hover:text-yellow-300 transition-colors">Dashboard</Link> </a>
           <a href="/appointments" className="hover:text-yellow-300 transition-colors duration-200"><Link to="/upcoming-appointments" className="text-white-600 hover:text-yellow-300 transition-colors">Appointments</Link></a>
           <a href="/analytics" className="hover:text-yellow-300 transition-colors duration-200"><Link to="/AnalyticsDashboard" className="text-white-600 hover:text-yellow-300 transition-colors">Analytics</Link></a>
           <a href="/analytics" className="hover:text-yellow-300 transition-colors duration-200"><Link to="/Feedback" className="text-white-600 hover:text-yellow-300 transition-colors">Review</Link></a>
 
-{/*         <a href="/profile" className="hover:text-yellow-300 transition-colors duration-200"> <Link to="/BookAppointment" className="text-white-600 hover:text-yellow-300 transition-colors">Profile</Link> </a> */}
+{/*       <a href="/profile" className="hover:text-yellow-300 transition-colors duration-200"> <Link to="/BookAppointment" className="text-white-600 hover:text-yellow-300 transition-colors">Profile</Link> </a> */}
         </nav>
 
 

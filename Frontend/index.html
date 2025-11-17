@@ -11,3 +11,209 @@
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>Book Appointment</title>-->
+
+<!--  <style>-->
+<!--    body {-->
+<!--      background: #f1f5f9;-->
+<!--      font-family: Arial, sans-serif;-->
+<!--    }-->
+
+<!--    .container {-->
+<!--      width: 380px;-->
+<!--      margin: auto;-->
+<!--      margin-top: 40px;-->
+<!--      padding: 25px;-->
+<!--      background: white;-->
+<!--      border-radius: 10px;-->
+<!--      box-shadow: 0 3px 8px rgba(0,0,0,0.1);-->
+<!--    }-->
+
+<!--    h2 {-->
+<!--      text-align: center;-->
+<!--      margin-bottom: 20px;-->
+<!--    }-->
+
+<!--    label {-->
+<!--      margin-top: 12px;-->
+<!--      display: block;-->
+<!--      font-weight: bold;-->
+<!--    }-->
+
+<!--    select, input, textarea {-->
+<!--      width: 100%;-->
+<!--      padding: 10px;-->
+<!--      margin-top: 5px;-->
+<!--      border-radius: 5px;-->
+<!--      border: 1px solid #ccc;-->
+<!--    }-->
+
+<!--    textarea {-->
+<!--      height: 70px;-->
+<!--    }-->
+
+<!--    button {-->
+<!--      width: 100%;-->
+<!--      margin-top: 20px;-->
+<!--      padding: 12px;-->
+<!--      background: #2563eb;-->
+<!--      color: white;-->
+<!--      font-weight: bold;-->
+<!--      border: none;-->
+<!--      border-radius: 5px;-->
+<!--      cursor: pointer;-->
+<!--    }-->
+
+<!--    button:hover {-->
+<!--      background: #1e4fc5;-->
+<!--    }-->
+
+<!--    .slots-container {-->
+<!--      display: flex;-->
+<!--      flex-wrap: wrap;-->
+<!--      gap: 10px;-->
+<!--      margin-top: 10px;-->
+<!--    }-->
+
+<!--    .slot {-->
+<!--      padding: 8px 12px;-->
+<!--      background: #e2e8f0;-->
+<!--      border-radius: 5px;-->
+<!--      cursor: pointer;-->
+<!--    }-->
+
+<!--    .slot.selected {-->
+<!--      background: #2563eb;-->
+<!--      color: white;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="container">-->
+<!--  <h2>Book an Appointment</h2>-->
+
+<!--  &lt;!&ndash; SPECIALTY &ndash;&gt;-->
+<!--  <label>Choose Specialty</label>-->
+<!--  <select id="specialty">-->
+<!--    <option value="">Select Specialty</option>-->
+<!--    <option value="General Physician">General Physician</option>-->
+<!--    <option value="Cardiologist">Cardiologist</option>-->
+<!--    <option value="Dermatologist">Dermatologist</option>-->
+<!--    <option value="Dentist">Dentist</option>-->
+<!--    <option value="Orthopedic">Orthopedic</option>-->
+<!--  </select>-->
+
+<!--  &lt;!&ndash; DOCTOR &ndash;&gt;-->
+<!--  <label>Choose Doctor</label>-->
+<!--  <select id="doctor">-->
+<!--    <option value="">Select a doctor</option>-->
+<!--  </select>-->
+
+<!--  &lt;!&ndash; DATE &ndash;&gt;-->
+<!--  <label>Select Date</label>-->
+<!--  <input type="date" id="date">-->
+
+<!--  &lt;!&ndash; TIME SLOTS &ndash;&gt;-->
+<!--  <label>Select Time Slot</label>-->
+<!--  <div id="slots" class="slots-container"></div>-->
+
+<!--  &lt;!&ndash; DETAILS &ndash;&gt;-->
+<!--  <label>Your Name</label>-->
+<!--  <input type="text" id="name" placeholder="Enter your name">-->
+
+<!--  <label>Phone Number</label>-->
+<!--  <input type="text" id="phone" placeholder="Enter phone number">-->
+
+<!--  <label>Symptoms (Optional)</label>-->
+<!--  <textarea id="symptoms" placeholder="Describe your issue..."></textarea>-->
+
+<!--  <button id="bookBtn">Book Appointment</button>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    const doctorSelect = document.getElementById("doctor");-->
+<!--    const specialtySelect = document.getElementById("specialty");-->
+<!--    const slotsContainer = document.getElementById("slots");-->
+
+<!--    // Dummy doctor data-->
+<!--    const doctors = {-->
+<!--      "General Physician": ["Dr. Amit Sharma", "Dr. Kavita Rao"],-->
+<!--      "Cardiologist": ["Dr. Neha Patel", "Dr. Raghav Verma"],-->
+<!--      "Dermatologist": ["Dr. Sunita Singh"],-->
+<!--      "Dentist": ["Dr. Raj Malhotra"],-->
+<!--      "Orthopedic": ["Dr. Manoj Kumar"]-->
+<!--    };-->
+
+<!--    // Time slots-->
+<!--    const slots = [-->
+<!--      "09:00 AM", "09:30 AM", "10:00 AM",-->
+<!--      "10:30 AM", "11:00 AM", "02:00 PM",-->
+<!--      "02:30 PM", "03:00 PM", "03:30 PM"-->
+<!--    ];-->
+
+<!--    // Load doctors based on specialty-->
+<!--    specialtySelect.addEventListener("change", () => {-->
+<!--      let selected = specialtySelect.value;-->
+
+<!--      doctorSelect.innerHTML = "<option value=''>Select a doctor</option>";-->
+
+<!--      if (doctors[selected]) {-->
+<!--        doctors[selected].forEach(doc => {-->
+<!--          let option = document.createElement("option");-->
+<!--          option.value = doc;-->
+<!--          option.textContent = doc;-->
+<!--          doctorSelect.appendChild(option);-->
+<!--        });-->
+<!--      }-->
+<!--    });-->
+
+<!--    // Render slots-->
+<!--    slots.forEach(time => {-->
+<!--      let div = document.createElement("div");-->
+<!--      div.classList.add("slot");-->
+<!--      div.innerText = time;-->
+<!--      div.onclick = () => selectSlot(div);-->
+<!--      slotsContainer.appendChild(div);-->
+<!--    });-->
+
+<!--    let selectedSlot = null;-->
+
+<!--    // Slot selection-->
+<!--    function selectSlot(div) {-->
+<!--      let allSlots = document.querySelectorAll(".slot");-->
+<!--      allSlots.forEach(s => s.classList.remove("selected"));-->
+<!--      div.classList.add("selected");-->
+<!--      selectedSlot = div.innerText;-->
+<!--    }-->
+
+<!--    document.getElementById("bookBtn").addEventListener("click", () => {-->
+<!--      let data = {-->
+<!--        specialty: specialtySelect.value,-->
+<!--        doctor: doctorSelect.value,-->
+<!--        date: document.getElementById("date").value,-->
+<!--        time: selectedSlot,-->
+<!--        name: document.getElementById("name").value,-->
+<!--        phone: document.getElementById("phone").value,-->
+<!--        symptoms: document.getElementById("symptoms").value,-->
+<!--      };-->
+
+<!--      if (!data.specialty || !data.doctor || !data.date || !data.time) {-->
+<!--        alert("Please fill all required fields!");-->
+<!--        return;-->
+<!--      }-->
+
+<!--      console.log("Appointment Data:", data);-->
+<!--      alert("Appointment Booked Successfully!");-->
+<!--    });-->
+<!--  </script>-->
+<!--</body>-->
+<!--</html>-->

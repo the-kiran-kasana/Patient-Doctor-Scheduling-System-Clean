@@ -29,7 +29,7 @@ authRoutes.post("/signup", async (req, res) => {
     const hash = await bcrypt.hash(password, saltRounds);
     await userModel.create({ username, email, password: hash, role });
 
-    const registerLink = `http://localhost:6060/authRoutes/verify?email=${email}`;
+    const registerLink = `http://localhost:6060/auth/verify?email=${email}`;
     await transporter.sendMail({
       from: `"Patient-Doctor App" <${process.env.GOOGLE_APP_EMAIL}>`,
       to: email,

@@ -22,8 +22,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,PieChart, Pie, Cell,ResponsiveContainer,} from "recharts";
 
-
-const API_BASE = "http://localhost:6060";
+//
+// const API_BASE = "http://localhost:6060";
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function AnalyticsDashboard() {

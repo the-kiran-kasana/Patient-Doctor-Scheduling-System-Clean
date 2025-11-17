@@ -1,20 +1,24 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from 'axios';
 
-export default function Signup() {
+export default function Register() {
   const [email, setEmail] = useState("");
+  const [verify , setVerify] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [role, setRole] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
+//   const API_BASE = "http://localhost:6060";
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      const response = await fetch("http://localhost:6060/auth/signup", {
+      const response = await fetch(`${API_BASE}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password, role }),
@@ -23,8 +27,12 @@ export default function Signup() {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Signup successful! Please check your email to verify.");
-        navigate("/login");
+         alert("Signup successful! Please check your email to verify.");
+
+         const verifySignup = await axios.get(`http://localhost:6060/auth/verify?email=${email}`);
+         setVerify(verifySignup.data);
+
+         navigate("/login");
       } else {
         setError(data.msg || "Signup failed. Please try again.");
       }

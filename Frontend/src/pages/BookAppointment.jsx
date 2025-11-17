@@ -10,20 +10,15 @@ export default function BookAppointment() {
   const [message, setMessage] = useState("");
 
   const token = localStorage.getItem("token");
-  const API_BASE = "http://localhost:6060/appointments";
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+
 
   const handleBook = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        `${API_BASE}/Book_Appointment`,
-        {
-          doctorName,
-          reason,
-          startTime,
-          endTime,
-          AppointmentTypes: service,
-        },
+      const res = await axios.post(`${API_BASE}/Book_Appointment`, { doctorName, reason, startTime, endTime, AppointmentTypes: service, },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -31,22 +26,28 @@ export default function BookAppointment() {
         setMessage("✅ Appointment booked successfully!");
       }
     } catch (err) {
-      console.error(err);
       setMessage("❌ Failed to book appointment. Please try again.");
     }
   };
 
+
+
+
+
+
+
   return (
+
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white">
       {/* Header Section */}
-      <section className="bg-blue-900 text-white text-center py-6 shadow-md">
-        <h1 className="text-3xl font-bold tracking-wide">
-          Book Your Appointment
-        </h1>
-        <p className="text-sm text-blue-100 mt-1">
-          Connect with top doctors & manage your health easily.
-        </p>
-      </section>
+{/*       <section className="bg-blue-900 text-white text-center py-6 shadow-md"> */}
+{/*         <h1 className="text-3xl font-bold tracking-wide"> Book Your Appointment </h1> */}
+{/*         <p className="text-sm text-blue-100 mt-1">  Connect with top doctors & manage your health easily. </p> */}
+{/*       </section> */}
+
+
+
+
 
       {/* Booking Card */}
       <main className="flex-1 flex justify-center items-center p-8">
@@ -123,35 +124,20 @@ export default function BookAppointment() {
             </div>
 
             {/* Submit */}
-            <button
-              type="submit"
-              className="bg-blue-900 text-white py-2 rounded-xl mt-4 hover:bg-blue-700 transition-all"
-            >
-              Book Appointment
-            </button>
+            <button type="submit" className="bg-blue-900 text-white py-2 rounded-xl mt-4 hover:bg-blue-700 transition-all" > Book Appointment </button>
 
             {message && (
-              <p
-                className={`mt-3 text-center font-medium ${
-                  message.includes("✅") ? "text-green-600" : "text-red-500"
-                }`}
-              >
-                {message}
-              </p>
+              <p className={`mt-3 text-center font-medium ${ message.includes("✅") ? "text-green-600" : "text-red-500" }`} > {message} </p>
             )}
           </form>
         </div>
       </main>
 
-      {/* Footer Section */}
-      <footer className="bg-blue-900 text-white text-center py-4 mt-auto">
-        <p className="text-sm">
-          © {new Date().getFullYear()} MediConnect — All Rights Reserved
-        </p>
-        <p className="text-xs text-blue-200 mt-1">
-          Powered by Patient-Doctor Scheduling System
-        </p>
-      </footer>
+
+{/*       <footer className="bg-blue-900 text-white text-center py-4 mt-auto"> */}
+{/*         <p className="text-sm"> © {new Date().getFullYear()} MediConnect — All Rights Reserved </p> */}
+{/*         <p className="text-xs text-blue-200 mt-1">  Powered by Patient-Doctor Scheduling System </p> */}
+{/*       </footer> */}
     </div>
   );
 }

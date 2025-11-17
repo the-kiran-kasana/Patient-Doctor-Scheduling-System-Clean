@@ -19,6 +19,7 @@ const PORT = process.env.PORT || 6060;
 //const authMiddleware = require("./middleware/auth.middleware");
 //app.use("/appointments", authMiddleware(["doctor", "patient"]), AppointmentRoutes);
 
+
 app.use(cors());
 connectDB();
 

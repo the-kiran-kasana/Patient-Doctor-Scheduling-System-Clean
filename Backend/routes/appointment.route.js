@@ -10,6 +10,8 @@ const userModel = require("../models/user.model");
 const AppointmentModel = require("../models/Appointment.model");
 const AppointmentRoutes = express.Router();
 
+
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
