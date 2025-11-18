@@ -76,9 +76,28 @@ authRoutes.post("/login", async (req, res) => {
   }
 });
 
+
+
 authRoutes.get("/verify", async (req, res) => {
   const { email } = req.query;
   res.send(`<h3>Email ${email} verified successfully!</h3>`);
 });
+
+
+
+authRoutes.get("/getUser/:id" , async (req ,res) => {
+     try{
+        let id = req.params.id;
+        const existingUser = await userModel.findById(id);
+        if (!existingUser) {
+           return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({ msg: " successful" , existingUser});
+     }
+     catch(err){
+         res.status(500).json({ msg: "Something went wrong during fetch user data" });
+     }
+})
+
 
 module.exports = { authRoutes };

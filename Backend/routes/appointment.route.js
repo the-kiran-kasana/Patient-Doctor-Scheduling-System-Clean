@@ -39,81 +39,87 @@ AppointmentRoutes.post("/Book_Appointment", authMiddleware(["doctor", "patient"]
         const newAppointment = await AppointmentModel.create({...appointmentData,userId, BookDate: appointmentData.BookDate || new Date(), });
 
 
+//
+//       // ✅ Set credentials for Google Calendar API
+//        if (!user.googleTokens || !user.googleTokens.access_token) {
+//          return res.status(408).json({ message: "Please connect Google Calendar first!" });
+//        }
+//        oauth2Client.setCredentials(user.googleTokens);
+//        const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+//        const event = {
+//          summary: `Appointment with Dr. ${appointmentData.doctorName}`,
+//          description: appointmentData.reason || "Appointment scheduled",
+//          start: { dateTime: appointmentData.startTime, timeZone: "Asia/Kolkata" },
+//          end: { dateTime: appointmentData.endTime, timeZone: "Asia/Kolkata" },
+//        };
+//        const result = await calendar.events.insert({calendarId: "primary",resource: event, });
+//        await AppointmentModel.updateOne({ _id: newAppointment._id },{ googleEventId: result.data.id });
+//
+//
+//
+//        // ✅ Queue Confirmation Message
+//        const channel = await connectRabbit();
+//        const confirmationPayload = {
+//          type: "confirmation",
+//          userId: user._id,
+//          email: user.email,
+//          username: user.username,
+//          appointmentId: newAppointment._id,
+//          appointmentType: newAppointment.AppointmentTypes,
+//          createdAt: new Date(),
+//        };
+//
+//        await channel.sendToQueue("notifications", Buffer.from(JSON.stringify(confirmationPayload)), {
+//          persistent: true,
+//        });
+//
+//    // ✅ Schedule Reminder
+//    if (user.notificationPreferences && user.notificationPreferences.enabled) {
+//      const minutesBefore = user.notificationPreferences.minutesBefore || 60;
+//      const BookDate = new Date(newAppointment.BookDate);
+//      const reminderTime = new Date(BookDate.getTime() - minutesBefore * 60 * 1000);
+//      const now = new Date();
+//
+//      if (reminderTime > now) {
+//        await reminderQueue.add(
+//          {
+//            type: "reminder",
+//            userId: user._id,
+//            email: user.email,
+//            username: user.username,
+//            appointmentId: newAppointment._id,
+//            appointmentType: newAppointment.AppointmentTypes,
+//            BookDate,
+//          },
+//          { delay: reminderTime.getTime() - now.getTime(), attempts: 3, backoff: 60000 }
+//        );
+//      } else {
+//        await channel.sendToQueue(
+//          "notifications",
+//          Buffer.from(
+//            JSON.stringify({
+//              type: "reminder",
+//              userId: user._id,
+//              email: user.email,
+//              username: user.username,
+//              appointmentId: newAppointment._id,
+//              appointmentType: newAppointment.AppointmentTypes,
+//              BookDate,
+//            })
+//          ),
+//          { persistent: true }
+//        );
+//      }
+//    }
+//
+//    // ✅ Send success response
+//    res.status(200).json({ message: "Appointment booked successfully and added to Google Calendar!", appointment: newAppointment,   eventLink: result.data.htmlLink,  });
 
-       // ✅ Set credentials for Google Calendar API
-        if (!user.googleTokens || !user.googleTokens.access_token) {
-          return res.status(400).json({ message: "Please connect Google Calendar first!" });
-        }
-        oauth2Client.setCredentials(user.googleTokens);
-        const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-        const event = {
-          summary: `Appointment with Dr. ${appointmentData.doctorName}`,
-          description: appointmentData.reason || "Appointment scheduled",
-          start: { dateTime: appointmentData.startTime, timeZone: "Asia/Kolkata" },
-          end: { dateTime: appointmentData.endTime, timeZone: "Asia/Kolkata" },
-        };
-        const result = await calendar.events.insert({calendarId: "primary",resource: event, });
-        await AppointmentModel.updateOne({ _id: newAppointment._id },{ googleEventId: result.data.id });
 
 
+      res.status(200).json({ msg: "Appointment booked successfully" });
 
-        // ✅ Queue Confirmation Message
-        const channel = await connectRabbit();
-        const confirmationPayload = {
-          type: "confirmation",
-          userId: user._id,
-          email: user.email,
-          username: user.username,
-          appointmentId: newAppointment._id,
-          appointmentType: newAppointment.AppointmentTypes,
-          createdAt: new Date(),
-        };
 
-        await channel.sendToQueue("notifications", Buffer.from(JSON.stringify(confirmationPayload)), {
-          persistent: true,
-        });
-
-    // ✅ Schedule Reminder
-    if (user.notificationPreferences && user.notificationPreferences.enabled) {
-      const minutesBefore = user.notificationPreferences.minutesBefore || 60;
-      const BookDate = new Date(newAppointment.BookDate);
-      const reminderTime = new Date(BookDate.getTime() - minutesBefore * 60 * 1000);
-      const now = new Date();
-
-      if (reminderTime > now) {
-        await reminderQueue.add(
-          {
-            type: "reminder",
-            userId: user._id,
-            email: user.email,
-            username: user.username,
-            appointmentId: newAppointment._id,
-            appointmentType: newAppointment.AppointmentTypes,
-            BookDate,
-          },
-          { delay: reminderTime.getTime() - now.getTime(), attempts: 3, backoff: 60000 }
-        );
-      } else {
-        await channel.sendToQueue(
-          "notifications",
-          Buffer.from(
-            JSON.stringify({
-              type: "reminder",
-              userId: user._id,
-              email: user.email,
-              username: user.username,
-              appointmentId: newAppointment._id,
-              appointmentType: newAppointment.AppointmentTypes,
-              BookDate,
-            })
-          ),
-          { persistent: true }
-        );
-      }
-    }
-
-    // ✅ Send success response
-    res.status(200).json({ message: "Appointment booked successfully and added to Google Calendar!", appointment: newAppointment,   eventLink: result.data.htmlLink,  });
   } catch (err) {
     console.error("❌ Error in booking appointment:", err);
     res.status(500).json({ msg: "Something went wrong while booking appointment" });
@@ -143,6 +149,9 @@ AppointmentRoutes.get("/showAppointment", authMiddleware(["doctor"]), async (req
     res.status(500).json({ msg: "Something went wrong while fetching appointments" });
   }
 });
+
+
+
 
 AppointmentRoutes.post("/sendNotification", async (req, res) => {
   try {
