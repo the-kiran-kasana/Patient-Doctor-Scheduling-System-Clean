@@ -36,7 +36,7 @@ AppointmentRoutes.post("/Book_Appointment", authMiddleware(["doctor", "patient"]
            return res.status(404).json({ message: "User not found" });
         }
 
-        const newAppointment = await AppointmentModel.create({...appointmentData,userId, BookDate: appointmentData.BookDate || new Date(), });
+        const newAppointment = await AppointmentModel.create({...appointmentData,userId, BookDate: new Date(appointmentData.BookDate) || new Date(), });
 
 
 //
@@ -127,15 +127,6 @@ AppointmentRoutes.post("/Book_Appointment", authMiddleware(["doctor", "patient"]
 });
 
 
-
-
-
-
-
-
-
-
-
 AppointmentRoutes.get("/showAppointment", authMiddleware(["doctor"]), async (req, res) => {
   try {
     const appointments = await AppointmentModel.find().sort({ BookDate: 1 });
@@ -187,7 +178,6 @@ AppointmentRoutes.get("/analytics/overview", authMiddleware(["doctor","admin"]),
 
 
 
-
 AppointmentRoutes.get("/analytics/trends", authMiddleware(["doctor", "admin"]), async (req, res) => {
   try {
     const trends = await AppointmentModel.aggregate([ {
@@ -204,9 +194,6 @@ AppointmentRoutes.get("/analytics/trends", authMiddleware(["doctor", "admin"]), 
     res.status(500).json({ msg: "Error fetching appointment trends", error: err.message });
   }
 });
-
-
-
 
 
 
@@ -278,9 +265,6 @@ AppointmentRoutes.put( "/update-expired", authMiddleware(["admin", "doctor"]),  
 );
 
 
-
-
-
 AppointmentRoutes.get(
   "/upcoming",
   authMiddleware(["doctor", "patient"]),
@@ -302,6 +286,30 @@ AppointmentRoutes.get(
     }
   }
 );
+
+
+
+
+
+AppointmentRoutes.get("/getUserAppointments/:id", authMiddleware(["patient"]), async (req, res) => {
+  try {
+    let id = req.params.id;
+    const appointments = await AppointmentModel.findOne({userId:id}).sort({ BookDate: 1 });
+
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({ msg: "No appointments found" });
+    }
+
+    res.status(200).json({ message: "Appointments fetched successfully", appointments });
+  } catch (err) {
+    res.status(500).json({ msg: "Something went wrong while fetching appointments" });
+  }
+});
+
+
+
+
+
 
 
 module.exports = { AppointmentRoutes };
