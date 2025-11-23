@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Calendar from "react-calendar";
@@ -30,6 +30,9 @@ export default function PatientDashboard() {
   const slots = ["09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "02:00 PM","02:30 PM", "03:00 PM", "03:30 PM",];
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+
+
 
 
   // BOOK APPOINTMENT
@@ -81,29 +84,23 @@ const getAppointments = async () => {
 
 
 const tileClassName = ({ date, view }) => {
-  if (view === "month") {
-    const formatted = date.toISOString().split("T")[0];
-
-    const isBooked = appointmentData.some((appt) => appt.BookDate === formatted);
-
-    console.log(isBooked)
-
-    //return isBooked ? "bg-blue-300 rounded-lg text-white font-bold" : "";
-  }
+//   if (view === "month") {
+//     const formatted = date.toISOString().split("T")[0];
+//
+//     const isBooked = appointmentData.some((appt) => appt.BookDate === formatted);
+//
+//     console.log(isBooked)
+//
+//     //return isBooked ? "bg-blue-300 rounded-lg text-white font-bold" : "";
+//   }
 };
 
 
 
-//
-//
-// getAppointments()
-// handleUserData()
-
-
-
-
-
-
+useEffect(() => {
+  getAppointments()
+  handleUserData();
+}, []);
 
 
 
@@ -121,15 +118,14 @@ const tileClassName = ({ date, view }) => {
         </div>
 
         <nav className="mt-10 space-y-3">
+
+          <div className="bg-blue-700 px-4 py-2 rounded cursor-pointer">Dashboard</div>
           <div className="bg-blue-700 px-4 py-2 rounded cursor-pointer">Book Appointment</div>
           <div className="bg-blue-700 px-4 py-2 rounded cursor-pointer">My Appointments</div>
           <div className="bg-blue-700 px-4 py-2 rounded cursor-pointer">My Feedback</div>
+          <div className="bg-blue-700 px-4 py-2 rounded cursor-pointer">Setting</div>
         </nav>
       </aside>
-
-
-
-
 
 
 
