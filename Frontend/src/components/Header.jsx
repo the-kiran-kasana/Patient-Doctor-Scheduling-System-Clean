@@ -14,6 +14,7 @@ function Header() {
           <h1 className="text-white text-3xl font-bold tracking-wide"> Patient-Doctor Scheduler </h1>
         </div>
 
+
         {/* Navigation */}
         <nav className="hidden md:flex space-x-8 text-white font-medium">
         <Link to="/" className="text-white-600 hover:text-yellow-300 transition-colors">Home</Link>
@@ -21,6 +22,7 @@ function Header() {
         <Link to="/upcoming-appointments" className="text-white-600 hover:text-yellow-300 transition-colors">Appointments</Link>
         <Link to="/AnalyticsDashboard" className="text-white-600 hover:text-yellow-300 transition-colors">Analytics</Link>
         <Link to="/Feedback" className="text-white-600 hover:text-yellow-300 transition-colors">Review</Link>
+        <Link to="/DoctorDashboard" className="text-white-600 hover:text-yellow-300 transition-colors">DoctorDashboard</Link>
 
 {/*       <a href="/profile" className="hover:text-yellow-300 transition-colors duration-200"> <Link to="/BookAppointment" className="text-white-600 hover:text-yellow-300 transition-colors">Profile</Link> </a> */}
         </nav>

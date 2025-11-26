@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import UserDetail from "./pages/UserDetail";
 import AnalyticsDashboard from "./components/AnalyticsDashboard";
 import PatientDashboard from "./components/PatientDashboard";
+import DoctorDashboard from "./components/DoctorDashboard";
 import UpcomingAppointments from "./pages/UpcomingAppointments";
 import BookAppointment from "./pages/BookAppointment";
 import  FeedbackForm from "./pages/FeedbackForm";
@@ -32,6 +33,7 @@ function App() {
          <Route path="/Feedback" element={<PrivateRoute> <FeedbackForm /> </PrivateRoute>} />
          <Route path="/upcoming-appointments" element={<PrivateRoute> <UpcomingAppointments /> </PrivateRoute>} />
          <Route path="/PatientDashboard" element={<PrivateRoute> <PatientDashboard /> </PrivateRoute>} />
+         <Route path="/DoctorDashboard" element={<PrivateRoute> <DoctorDashboard /> </PrivateRoute>} />
 {/*          <Route path="/BookAppointment" element={<PrivateRoute> <BookAppointment /> </PrivateRoute>} /> */}
       </Routes>
     </div>

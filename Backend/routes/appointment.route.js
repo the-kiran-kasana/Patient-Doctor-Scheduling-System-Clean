@@ -265,10 +265,7 @@ AppointmentRoutes.put( "/update-expired", authMiddleware(["admin", "doctor"]),  
 );
 
 
-AppointmentRoutes.get(
-  "/upcoming",
-  authMiddleware(["doctor", "patient"]),
-  async (req, res) => {
+AppointmentRoutes.get("/upcoming", authMiddleware(["doctor", "patient"]), async (req, res) => {
     try {
       const userId = req.user;
 
@@ -305,6 +302,7 @@ AppointmentRoutes.get("/getUserAppointments/:id", authMiddleware(["patient"]), a
     res.status(500).json({ msg: "Something went wrong while fetching appointments" });
   }
 });
+
 
 
 

@@ -9,7 +9,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 
 
-export default function PatientDashboard() {
+export default function DoctorDashboard() {
   const [appointmentType, setAppointmentType] = useState("");
   const [doctor, setDoctor] = useState("");
   const [date, setDate] = useState("");
@@ -120,6 +120,12 @@ useEffect(() => {
 
 
 
+
+
+
+
+
+
   return (
     <div className="flex min-h-screen bg-gray-100">
 
@@ -141,16 +147,6 @@ useEffect(() => {
 
 
 
-{/* <a href="mailto:kkasanacoder@gmail.com" className=" inline-flex items-center gap-2 px-5 py-2.5 rounded-lg */}
-{/*       bg-transparent border border-cyan-400/40 text-cyan-300 hover:border-cyan-300 hover:text-cyan-200 */}
-{/*       hover:shadow-[0_0_20px_rgba(34,211,238,0.5)] transition-all duration-300 " > */}
-{/*     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"> */}
-{/*       <path d="M2 4h20v16H2V4zm10 7L4 6v2l8 5 8-5V6l-8 5z" /> */}
-{/*     </svg> */}
-{/*     <span>Email</span> */}
-{/*   </a> */}
-{/*    */}
-
         <nav className="mt-10 space-y-3">
 
           <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><LayoutDashboard size={18}/>Dashboard</div>
@@ -164,88 +160,15 @@ useEffect(() => {
 
 
 
+
+
       {/* MIDDLE SECTION */}
-      <main className="flex-1 px-10 py-8">
-        <h1 className="text-3xl font-bold text-blue-800 text-center mb-5"> Book Appointment </h1>
+      <main className="flex-1 px-10 py-8 gap-10 grid grid-cols-2">
+{/*         <h1 className="text-3xl font-bold text-blue-800  text-center mb-5"> Book Appointment </h1> */}
 
-        <div className="bg-white p-6 rounded-xl shadow-lg max-w-full">
-          <form className="space-y-4" onSubmit={handleBook}>
+        <div className="bg-white p-6 rounded-xl shadow-lg font-bold text-2xl text-center text-blue-800  max-w-full">Upcoming Appointment</div>
 
-            {/* Appointment Type */}
-            <div>
-              <label className="font-semibold text-gray-700">Select Appointment Type</label>
-              <select  className="w-full border p-2 rounded mt-1" value={appointmentType} onChange={(e) => setAppointmentType(e.target.value)} >
-                <option value="">Select appointment type</option>
-                <option>in-person</option>
-                <option>telemedicine</option>
-              </select>
-            </div>
-
-            {/* Doctor */}
-            <div>
-              <label className="font-semibold text-gray-700">Choose Doctor</label>
-              <select
-                className="w-full border p-2 rounded mt-1"
-                value={doctor}
-                onChange={(e) => setDoctor(e.target.value)}
-              >
-                <option value="">Select Doctor</option>
-                {doctorsList.map((doc) => (
-                  <option key={doc}>{doc}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Date */}
-            <div>
-              <label className="font-semibold text-gray-700">Select Date</label>
-              <input
-                type="date"
-                className="w-full border p-2 rounded mt-1"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-            </div>
-
-            {/* Time Slots */}
-            <div>
-              <label className="font-semibold text-gray-700">Select Time Slot</label>
-
-              <div className="grid grid-cols-3 gap-3 mt-2">
-                {slots.map((time) => (
-                  <button
-                    type="button"
-                    key={time}
-                    onClick={() => setSelectedSlot(time)}
-                    className={`p-2 rounded border ${
-                      selectedSlot === time ? "bg-blue-700 text-white" : "bg-gray-200"
-                    }`}
-                  >
-                    {time}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Symptoms */}
-            <div>
-              <label className="font-semibold text-gray-700">Symptoms (optional)</label>
-              <textarea
-                className="w-full border p-2 rounded mt-1"
-                rows="3"
-                value={symptoms}
-                onChange={(e) => setSymptoms(e.target.value)}
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-blue-900 text-white py-2 rounded-lg hover:bg-blue-700"
-            >
-              Book Appointment
-            </button>
-          </form>
-        </div>
+        <div className="bg-white p-6 rounded-xl shadow-lg  max-w-full"></div>
       </main>
 
 
@@ -266,30 +189,28 @@ useEffect(() => {
       {/* RIGHT SECTION */}
       <aside className="w-[380px] p-10 space-y-6">
 
-        {/* My Appointments */}
+
         <h2 className="font-bold  text-2xl text-center text-blue-800">Appointment Details</h2>
         <hr />
         <div className="bg-white shadow-md rounded-xl p-4">
-              <h2 className="font-bold text-lg text-blue-900 mb-3">My Appointments</h2>
-              <div className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
-                <h3 className="font-semibold">{appointmentData?.doctorName} ({appointmentData?.appointmentTypes})</h3>
-                <p className="text-sm text-gray-600">{appointmentData?.BookDate} • {appointmentData?.startTime}</p>
-                <p className="text-sm text-gray-600">{appointmentData?.reason}</p>
-                <p className="text-sm text-gray-600">{appointmentData?.status}</p>
-              </div>
+              <h2 className="font-bold text-lg text-blue-900 mb-3">Pending Appointments</h2>
+              <p className="text-sm text-gray-600">{appointmentData?.status}</p>
         </div>
 
 
-{/*          */}{/* Appointment History */}
-{/*         <div className="bg-white shadow-md rounded-xl p-4"> */}
-{/*           <h2 className="font-bold text-lg text-blue-900">Appointment History</h2> */}
-{/*           <p className="text-sm text-gray-500 mt-2">{appointmentHistoryData?.doctorName}</p> */}
-{/*           <p className="text-sm text-gray-500 mt-2">{appointmentHistoryData?.status}</p> */}
-{/*           <p className="text-sm text-gray-500 mt-2">{appointmentHistoryData?.reason}</p> */}
-{/*           <p className="text-sm text-gray-500 mt-2">{appointmentHistoryData?.BookDate} . {appointmentHistoryData?.startTime}</p> */}
-{/*         </div> */}
+        <div className="bg-white shadow-md rounded-xl p-4">
+                      <h2 className="font-bold text-lg text-blue-900 mb-3">Completed Appointments</h2>
+                      <div className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
+                      <p className="text-sm text-gray-600">{appointmentData?.status}</p>
+                      </div>
+         </div>
 
-        {/* Calendar */}
+
+         <div className="bg-white shadow-md rounded-xl p-4">
+                              <h2 className="font-bold text-lg text-blue-900 mb-3">Cancelled Appointments</h2>
+                              <p className="text-sm text-gray-600">{appointmentData?.status}</p>
+                 </div>
+
 
           <div className="bg-white shadow-md rounded-xl p-4">
               <h2 className="font-bold text-lg text-blue-900 mb-2">Calendar</h2>
