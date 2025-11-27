@@ -16,6 +16,8 @@ export default function DoctorDashboard() {
   const [selectedSlot, setSelectedSlot] = useState("");
   const [symptoms, setSymptoms] = useState("");
   const [userData, setUserData] = useState(null);
+const [fetchAppointment, setFetchAppointment] = useState([]);
+
   const [appointmentData, setAppointmentData] = useState([]);
   const [appointmentHistoryData, setAppointmentHistoryData] = useState("No Appointments history");
   const [calendarDate, setCalendarDate] = useState(new Date());
@@ -43,25 +45,24 @@ export default function DoctorDashboard() {
 
 
   // BOOK APPOINTMENT
-  const handleBook = async (e) => {
-    e.preventDefault();
+  const handleAppointment = async () => {
     try {
-      await axios.post(`${API_BASE}/appointment/Book_Appointment`,{ appointmentTypes: appointmentType, doctorName: doctor, reason: symptoms, BookDate: date, startTime: selectedSlot, },
-         { headers: { Authorization: `Bearer ${token}` } }
-      );
-      alert("Appointment Booked Successfully!");
+     const response =  await axios.get(`${API_BASE}/appointment/showAppointment`, { headers: { Authorization: `Bearer ${token}` } });
+      setFetchAppointment(response.data.appointments);
+      console.log("all appointment is here " ,response.data.appointments)
     } catch (err) {
-      console.log("error when bookings" , err);
-      alert("Failed to book appointment!");
+      console.log("error when fetching appointment" , err);
+      alert("Failed to fetching appointment!");
     }
   };
+
+
 
 
 const handleUserData = async () => {
   try {
     const response = await axios.get(`${API_BASE}/auth/getUser/${userId}`, {  headers: { Authorization: `Bearer ${token}` } });
     setUserData(response.data.existingUser);
-    console.log("Successfully fetched user data:", response.data);
 
   } catch (err) {
     console.log("Something went wrong while fetching user data:", err);
@@ -76,7 +77,6 @@ const getAppointments = async () => {
     const response = await axios.get(`${API_BASE}/appointment/getUserAppointments/${userId}`, {  headers: { Authorization: `Bearer ${token}` } });
     if(response.data.appointments.status == "scheduled"){
        setAppointmentData(response.data.appointments || []);
-       console.log("Successfully fetched Appointments  data:", response.data.appointments);
     }else{
        setAppointmentData("No Appointments scheduled");
        setAppointmentHistoryData(response.data.appointments)
@@ -116,6 +116,7 @@ const tileClassName = ({ date, view }) => {
 useEffect(() => {
   getAppointments()
   handleUserData();
+  handleAppointment();
 }, []);
 
 
@@ -162,16 +163,35 @@ useEffect(() => {
 
 
 
-      {/* MIDDLE SECTION */}
-      <main className="flex-1 px-10 py-8 gap-10 grid grid-cols-2">
-{/*         <h1 className="text-3xl font-bold text-blue-800  text-center mb-5"> Book Appointment </h1> */}
+   {/* MIDDLE SECTION */}
+   <main className="flex-1 px-10 py-8 gap-10 grid grid-cols-2">
 
-        <div className="bg-white p-6 rounded-xl shadow-lg font-bold text-2xl text-center text-blue-800  max-w-full">Upcoming Appointment</div>
+     {/* Title */}
+     <div className="bg-white p-6 rounded-xl shadow-lg font-bold text-2xl text-center text-blue-800">
+       Upcoming Appointment
+     </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-lg  max-w-full"></div>
-      </main>
+     {/* Appointment List */}
+     <div className="bg-white p-6 rounded-xl shadow-lg max-w-full">
+       {fetchAppointment && fetchAppointment.length > 0 ? (
+         fetchAppointment.map((h, id) => (
+           <div
+             key={id}
+             className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded"
+           >
+           <h2 className="font-semibold text-lg">{h.userId?.username}</h2>
+             <h2 className="font-semibold text-lg">{h.appointmentTypes}</h2>
+             <p>{h.reason}</p>
+             <p className="text-sm text-gray-700">{h.status}</p>
+             <div className="text-right font-medium">{h.startTime}</div>
+           </div>
+         ))
+       ) : (
+         <p className="text-gray-500">No appointments found</p>
+       )}
+     </div>
 
-
+   </main>
 
 
 

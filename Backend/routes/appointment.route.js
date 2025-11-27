@@ -127,15 +127,18 @@ AppointmentRoutes.post("/Book_Appointment", authMiddleware(["doctor", "patient"]
 });
 
 
-AppointmentRoutes.get("/showAppointment", authMiddleware(["doctor"]), async (req, res) => {
+
+
+AppointmentRoutes.get("/showAppointment", authMiddleware(["doctor" , "patient"]), async (req, res) => {
   try {
-    const appointments = await AppointmentModel.find().sort({ BookDate: 1 });
+    const appointments = await AppointmentModel.find().populate("userId", "username email role").sort({ BookDate: 1 });
+    console.log(appointments)
 
     if (!appointments || appointments.length === 0) {
       return res.status(404).json({ msg: "No appointments found" });
     }
 
-    res.status(200).json({ message: "Appointments fetched successfully", appointments });
+    res.status(200).json({ message: "Appointments fetched successfully", appointments});
   } catch (err) {
     res.status(500).json({ msg: "Something went wrong while fetching appointments" });
   }
@@ -269,12 +272,9 @@ AppointmentRoutes.get("/upcoming", authMiddleware(["doctor", "patient"]), async 
     try {
       const userId = req.user;
 
-      // Find upcoming appointments for this user (doctor or patient)
       const now = new Date();
-      const appointments = await AppointmentModel.find({
-        userId, // Filter by current user
-        startTime: { $gte: now }, // Only upcoming appointments
-      }).sort({ startTime: 1 }); // Sort by soonest first
+      const appointments = await AppointmentModel.find({ userId,  startTime: { $gte: now },
+      }).sort({ startTime: 1 });
 
       res.status(200).json({ appointments });
     } catch (err) {
