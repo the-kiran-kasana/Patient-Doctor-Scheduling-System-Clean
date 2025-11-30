@@ -21,7 +21,6 @@ export default function DoctorDashboard() {
   const [pendingAppointment , setPendingAppointment] = useState(0);
   const [cancelledAppointment , setCancelledAppointment] = useState(0);
   const [completedAppointment , setCompletedAppointment] = useState(0);
-
   const [appointmentData, setAppointmentData] = useState([]);
   const [appointmentHistoryData, setAppointmentHistoryData] = useState("No Appointments history");
   const [calendarDate, setCalendarDate] = useState(new Date());
@@ -48,6 +47,11 @@ export default function DoctorDashboard() {
 
 
 
+
+
+
+
+
   // BOOK APPOINTMENT
   const handleAppointment = async () => {
     try {
@@ -55,6 +59,13 @@ export default function DoctorDashboard() {
 
       setFetchAppointment(response.data.appointments);
       setTotalAppointment(response.data.appointments.length)
+
+
+      useEffect(() => {
+
+      });
+
+
     } catch (err) {
       console.log("error when fetching appointment" , err);
       alert("Failed to fetching appointment!");
@@ -206,12 +217,7 @@ useEffect(() => {
       {/* RIGHT SECTION */}
       <aside className="w-[380px] p-10 space-y-6">
 
-     {fetchAppointment.map((apt, id) => (
-       <p key={id}>{apt.status == "scheduled"} ? {setPendingAppointment(pendingAppointment + 1)} : {apt.status == "completed"} ? {setCompletedAppointment(completedAppointment + 1)} : {setCancelledAppointment(cancelledAppointment + 1)}</p>
 
-
-
-     ))}
 
 
 
