@@ -16,7 +16,11 @@ export default function DoctorDashboard() {
   const [selectedSlot, setSelectedSlot] = useState("");
   const [symptoms, setSymptoms] = useState("");
   const [userData, setUserData] = useState(null);
-const [fetchAppointment, setFetchAppointment] = useState([]);
+  const [fetchAppointment, setFetchAppointment] = useState([]);
+  const [totalAppointment , setTotalAppointment] = useState(0);
+  const [pendingAppointment , setPendingAppointment] = useState(0);
+  const [cancelledAppointment , setCancelledAppointment] = useState(0);
+  const [completedAppointment , setCompletedAppointment] = useState(0);
 
   const [appointmentData, setAppointmentData] = useState([]);
   const [appointmentHistoryData, setAppointmentHistoryData] = useState("No Appointments history");
@@ -48,8 +52,9 @@ const [fetchAppointment, setFetchAppointment] = useState([]);
   const handleAppointment = async () => {
     try {
      const response =  await axios.get(`${API_BASE}/appointment/showAppointment`, { headers: { Authorization: `Bearer ${token}` } });
+
       setFetchAppointment(response.data.appointments);
-      console.log("all appointment is here " ,response.data.appointments)
+      setTotalAppointment(response.data.appointments.length)
     } catch (err) {
       console.log("error when fetching appointment" , err);
       alert("Failed to fetching appointment!");
@@ -173,12 +178,10 @@ useEffect(() => {
 
      {/* Appointment List */}
      <div className="bg-white p-6 rounded-xl shadow-lg max-w-full">
+     <h2 className=" p-6 font-bold text-2xl text-center text-blue-800"> Upcoming Appointment </h2>
        {fetchAppointment && fetchAppointment.length > 0 ? (
          fetchAppointment.map((h, id) => (
-           <div
-             key={id}
-             className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded"
-           >
+           <div key={id} className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
            <h2 className="font-semibold text-lg">{h.userId?.username}</h2>
              <h2 className="font-semibold text-lg">{h.appointmentTypes}</h2>
              <p>{h.reason}</p>
@@ -200,35 +203,42 @@ useEffect(() => {
 
 
 
-
-
-
-
-
-
       {/* RIGHT SECTION */}
       <aside className="w-[380px] p-10 space-y-6">
+
+     {fetchAppointment.map((apt, id) => (
+       <p key={id}>{apt.status == "scheduled"} ? {setPendingAppointment(pendingAppointment + 1)} : {apt.status == "completed"} ? {setCompletedAppointment(completedAppointment + 1)} : {setCancelledAppointment(cancelledAppointment + 1)}</p>
+
+
+
+     ))}
+
 
 
         <h2 className="font-bold  text-2xl text-center text-blue-800">Appointment Details</h2>
         <hr />
         <div className="bg-white shadow-md rounded-xl p-4">
+              <h2 className="font-bold text-lg text-blue-900 mb-3">Total Appointments</h2>
+              <p className="text-sm text-gray-600">{totalAppointment}</p>
+        </div>
+
+        <div className="bg-white shadow-md rounded-xl p-4">
               <h2 className="font-bold text-lg text-blue-900 mb-3">Pending Appointments</h2>
-              <p className="text-sm text-gray-600">{appointmentData?.status}</p>
+              <p className="text-sm text-gray-600">{pendingAppointment}</p>
         </div>
 
 
         <div className="bg-white shadow-md rounded-xl p-4">
                       <h2 className="font-bold text-lg text-blue-900 mb-3">Completed Appointments</h2>
                       <div className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
-                      <p className="text-sm text-gray-600">{appointmentData?.status}</p>
+                      <p className="text-sm text-gray-600">{completedAppointment}</p>
                       </div>
          </div>
 
 
          <div className="bg-white shadow-md rounded-xl p-4">
                               <h2 className="font-bold text-lg text-blue-900 mb-3">Cancelled Appointments</h2>
-                              <p className="text-sm text-gray-600">{appointmentData?.status}</p>
+                              <p className="text-sm text-gray-600">{cancelledAppointment}</p>
                  </div>
 
 
@@ -237,6 +247,7 @@ useEffect(() => {
               <Calendar onChange={setCalendarDate} value={calendarDate} tileClassName={tileClassName}/>
               <p className="text-sm mt-2 text-gray-700"> Selected Date: {calendarDate.toDateString()}</p>
           </div>
+
 
       </aside>
     </div>
