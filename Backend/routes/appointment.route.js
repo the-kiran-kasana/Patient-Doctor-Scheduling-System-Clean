@@ -164,7 +164,7 @@ AppointmentRoutes.post("/sendNotification", async (req, res) => {
 
 
 
-AppointmentRoutes.get("/analytics/overview", authMiddleware(["doctor","admin"]), async (req, res) => {
+AppointmentRoutes.get("/analytics/overview", authMiddleware(["doctor","admin","patient"]), async (req, res) => {
     try {
       const totalAppointments = await AppointmentModel.countDocuments();
       const completed = await AppointmentModel.countDocuments({ status: "completed" });
@@ -181,7 +181,7 @@ AppointmentRoutes.get("/analytics/overview", authMiddleware(["doctor","admin"]),
 
 
 
-AppointmentRoutes.get("/analytics/trends", authMiddleware(["doctor", "admin"]), async (req, res) => {
+AppointmentRoutes.get("/analytics/trends", authMiddleware(["doctor", "admin","patient"]), async (req, res) => {
   try {
     const trends = await AppointmentModel.aggregate([ {
         $group: {
@@ -201,7 +201,7 @@ AppointmentRoutes.get("/analytics/trends", authMiddleware(["doctor", "admin"]), 
 
 
 
-AppointmentRoutes.get("/analytics/provider-performance", authMiddleware(["doctor" , "admin"]), async (req, res) => {
+AppointmentRoutes.get("/analytics/provider-performance", authMiddleware(["doctor" , "admin","patient"]), async (req, res) => {
   try {
     const performance = await AppointmentModel.aggregate([
       {
@@ -229,7 +229,7 @@ AppointmentRoutes.get("/analytics/provider-performance", authMiddleware(["doctor
 
 
 
-AppointmentRoutes.get("/analytics/predict-cancellations", authMiddleware(["admin" , "doctor" ]), async (req, res) => {
+AppointmentRoutes.get("/analytics/predict-cancellations", authMiddleware(["admin" , "doctor" ,"patient"]), async (req, res) => {
   try {
     const data = await AppointmentModel.find({}, "patientName status createdAt");
     const risk = data.map((a) => {

@@ -1,10 +1,11 @@
-import { useState ,useEffect} from "react";
+import { useState ,useEffect, createContext} from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { Cog , MessageSquare , CalendarDays ,LayoutDashboard , CalendarCheck, Clock, User, Loader2} from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
+export const AppointmentContext = createContext();
 
 
 
@@ -17,6 +18,7 @@ export default function DoctorDashboard() {
   const [symptoms, setSymptoms] = useState("");
   const [userData, setUserData] = useState(null);
   const [fetchAppointment, setFetchAppointment] = useState([]);
+  const [todayAppointment, setTodayAppointment] = useState([]);
   const [totalAppointment , setTotalAppointment] = useState(0);
   const [pendingAppointment , setPendingAppointment] = useState(0);
   const [cancelledAppointment , setCancelledAppointment] = useState(0);
@@ -49,28 +51,46 @@ export default function DoctorDashboard() {
 
 
 
+const handleAppointment = async () => {
+  try {
+    const response = await axios.get(
+      `${API_BASE}/appointment/showAppointment`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const appointments = response.data.appointments;
+
+//     setFetchAppointment(appointments);
+    setTotalAppointment(appointments.length);
+
+    const result = appointments.reduce(
+      (acc, apt) => {
+        if (apt.status === "scheduled") acc.pending++;
+        else if (apt.status === "completed") acc.completed++;
+        else acc.cancelled++;
+        return acc;
+      },
+      { pending: 0, completed: 0, cancelled: 0 }
+    );
+
+    const upComing = appointments.filter(appt => ["scheduled"].includes(appt.status))
+    setFetchAppointment(upComing);
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const todayAppointments = appointments.filter(appt =>  appt.BookDate.split("T")[0] === today);
+    setTodayAppointment(todayAppointments);
 
 
+    setPendingAppointment(result.pending);
+    setCompletedAppointment(result.completed);
+    setCancelledAppointment(result.cancelled);
 
-  // BOOK APPOINTMENT
-  const handleAppointment = async () => {
-    try {
-     const response =  await axios.get(`${API_BASE}/appointment/showAppointment`, { headers: { Authorization: `Bearer ${token}` } });
-
-      setFetchAppointment(response.data.appointments);
-      setTotalAppointment(response.data.appointments.length)
-
-
-      useEffect(() => {
-
-      });
-
-
-    } catch (err) {
-      console.log("error when fetching appointment" , err);
-      alert("Failed to fetching appointment!");
-    }
-  };
+  } catch (err) {
+    console.log("error when fetching appointment", err);
+    alert("Failed to fetch appointment!");
+  }
+};
 
 
 
@@ -144,6 +164,12 @@ useEffect(() => {
 
 
   return (
+
+//   <AppointmentContext.Provider value={{ appointments, setAppointments }}>
+//         {children}
+//       </AppointmentContext.Provider>
+
+
     <div className="flex min-h-screen bg-gray-100">
 
       {/* LEFT SIDEBAR */}
@@ -176,15 +202,26 @@ useEffect(() => {
       </aside>
 
 
-
-
-
    {/* MIDDLE SECTION */}
    <main className="flex-1 px-10 py-8 gap-10 grid grid-cols-2">
 
      {/* Title */}
-     <div className="bg-white p-6 rounded-xl shadow-lg font-bold text-2xl text-center text-blue-800">
-       Upcoming Appointment
+     <div className="bg-white p-6 rounded-xl shadow-lg font-bold text-2xl ">
+      <h2 className=" p-6 font-bold text-2xl text-center text-blue-800">Today Appointment </h2>
+
+      {todayAppointment && todayAppointment.length > 0 ? (
+               todayAppointment.map((h, id) => (
+                 <div key={id} className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
+                 <h2 className="font-semibold text-lg">{h.userId?.username}</h2>
+                   <h2 className="font-semibold text-lg">{h.appointmentTypes}</h2>
+                   <p>{h.reason}</p>
+                   <p className="text-sm text-gray-700">{h.status}</p>
+                   <div className="text-right font-medium">{h.startTime}</div>
+                 </div>
+               ))
+             ) : (
+               <p className="text-gray-500">No appointments found</p>
+             )}
      </div>
 
      {/* Appointment List */}
@@ -198,6 +235,15 @@ useEffect(() => {
              <p>{h.reason}</p>
              <p className="text-sm text-gray-700">{h.status}</p>
              <div className="text-right font-medium">{h.startTime}</div>
+             <div className="text-right font-medium">
+               {new Date(h.BookDate).toLocaleDateString("en-GB", {
+                 day: "2-digit",
+                 month: "short",
+                 year: "numeric"
+               })}
+             </div>
+
+
            </div>
          ))
        ) : (
