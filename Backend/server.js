@@ -45,8 +45,11 @@ app.use("/calendar", CalendarRoutes);
 
 app.use(cors({
   origin: "http://localhost:5173", // or the port your frontend runs on
+//  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
+
+
 
 
 cron.schedule("0 * * * *", async () => {
