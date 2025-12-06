@@ -154,7 +154,7 @@ useEffect(() => {
         <nav className="mt-10 space-y-3">
 
           <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><LayoutDashboard size={18}/>Dashboard</div>
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><CalendarDays size={18}/><spam>My Appointments </spam></div>
+          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><CalendarDays size={18}/><span>My Appointments </span></div>
           <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><MessageSquare size={18}/><span>My Feedback</span></div>
           <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"> <Cog size={18} /><span>Setting</span></div>
         </nav>

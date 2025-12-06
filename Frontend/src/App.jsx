@@ -33,7 +33,7 @@ function App() {
          <Route path="/Feedback" element={<PrivateRoute> <FeedbackForm /> </PrivateRoute>} />
          <Route path="/upcoming-appointments" element={<PrivateRoute> <UpcomingAppointments /> </PrivateRoute>} />
          <Route path="/PatientDashboard" element={<PrivateRoute> <PatientDashboard /> </PrivateRoute>} />
-         <Route path="/DoctorDashboard" element={<PrivateRoute> <DoctorDashboard /> </PrivateRoute>} />
+                   <Route path="/DoctorDashboard" element={<PrivateRoute> <DoctorDashboard /> </PrivateRoute>} /> */}
 {/*          <Route path="/BookAppointment" element={<PrivateRoute> <BookAppointment /> </PrivateRoute>} /> */}
       </Routes>
     </div>

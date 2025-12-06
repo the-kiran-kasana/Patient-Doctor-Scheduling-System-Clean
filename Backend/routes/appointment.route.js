@@ -132,7 +132,7 @@ AppointmentRoutes.post("/Book_Appointment", authMiddleware(["doctor", "patient"]
 AppointmentRoutes.get("/showAppointment", authMiddleware(["doctor" , "patient"]), async (req, res) => {
   try {
     const appointments = await AppointmentModel.find().populate("userId", "username email role").sort({ BookDate: 1 });
-    console.log(appointments)
+
 
     if (!appointments || appointments.length === 0) {
       return res.status(404).json({ msg: "No appointments found" });
@@ -169,7 +169,9 @@ AppointmentRoutes.get("/analytics/overview", authMiddleware(["doctor","admin","p
       const totalAppointments = await AppointmentModel.countDocuments();
       const completed = await AppointmentModel.countDocuments({ status: "completed" });
       const cancelled = await AppointmentModel.countDocuments({ status: "cancelled" });
+
       const upcoming = await AppointmentModel.countDocuments({ status: "scheduled" });
+
       const totalRevenue = completed * 500;
 
       res.status(200).json({ totalAppointments,completed, cancelled,upcoming, noShowRate: ((cancelled / totalAppointments) * 100).toFixed(2) + "%", totalRevenue, });

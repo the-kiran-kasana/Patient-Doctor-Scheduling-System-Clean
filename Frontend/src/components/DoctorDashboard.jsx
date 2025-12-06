@@ -3,7 +3,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
-import { Cog , MessageSquare , CalendarDays ,LayoutDashboard , CalendarCheck, Clock, User, Loader2} from "lucide-react";
+import { Cog , MessageSquare , CalendarDays ,LayoutDashboard , CalendarCheck, Clock, User, Loader2 , BookX , ClipboardClock} from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 export const AppointmentContext = createContext();
 
@@ -193,7 +193,7 @@ useEffect(() => {
         <nav className="mt-10 space-y-3">
 
           <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><LayoutDashboard size={18}/>Dashboard</div>
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><CalendarDays size={18}/><spam>My Appointments </spam></div>
+          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><CalendarDays size={18}/><span>My Appointments </span></div>
           <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><MessageSquare size={18}/><span>My Feedback</span></div>
           <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"> <Cog size={18} /><span>Setting</span></div>
         </nav>
@@ -264,34 +264,52 @@ useEffect(() => {
       <aside className="w-[380px] p-10 space-y-6">
 
 
-
-
-
         <h2 className="font-bold  text-2xl text-center text-blue-800">Appointment Details</h2>
         <hr />
-        <div className="bg-white shadow-md rounded-xl p-4">
-              <h2 className="font-bold text-lg text-blue-900 mb-3">Total Appointments</h2>
-              <p className="text-sm text-gray-600">{totalAppointment}</p>
+
+
+
+       <div className="bg-white shadow-lg rounded-2xl p-5 flex items-center gap-4 hover:shadow-xl transition-all duration-300">
+         <div className="flex items-center justify-center text-blue-900"> <CalendarDays size={32} /> </div>
+         <div className="w-[2px] h-12 bg-gray-300"></div>
+         <div>
+           <h2 className="text-base font-semibold text-gray-700"> Total Appointments</h2>
+           <p className="text-2xl font-bold text-blue-800">{totalAppointment}</p>
+         </div>
+       </div>
+
+
+
+        <div className="bg-white shadow-lg rounded-2xl p-5 flex items-center gap-4 hover:shadow-xl transition-all duration-300">
+           <div className="flex items-center justify-center text-blue-900"><ClipboardClock size={32}/></div>
+           <div className="w-[2px] h-12 bg-gray-300"></div>
+            <div>
+              <h2 className="font-semibold  text-gray-700 text-base">Pending Appointments</h2>
+              <p className="text-2xl font-blod text-yellow-500">{pendingAppointment}</p>
+            </div>
         </div>
 
-        <div className="bg-white shadow-md rounded-xl p-4">
-              <h2 className="font-bold text-lg text-blue-900 mb-3">Pending Appointments</h2>
-              <p className="text-sm text-gray-600">{pendingAppointment}</p>
-        </div>
 
-
-        <div className="bg-white shadow-md rounded-xl p-4">
-                      <h2 className="font-bold text-lg text-blue-900 mb-3">Completed Appointments</h2>
-                      <div className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
-                      <p className="text-sm text-gray-600">{completedAppointment}</p>
-                      </div>
+        <div className="bg-white shadow-lg rounded-2xl p-5 flex items-center gap-4 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center justify-center text-blue-900"><CalendarCheck size={32}/></div>
+          <div className="w-[2px] h-12 bg-gray-300"></div>
+          <div>
+             <h2 className="font-semibold  text-gray-700  text-base">Complete Appointments</h2>
+             <p className="text-2xl font-bold text-green-600">{completedAppointment}</p>
+          </div>
          </div>
 
 
-         <div className="bg-white shadow-md rounded-xl p-4">
-                              <h2 className="font-bold text-lg text-blue-900 mb-3">Cancelled Appointments</h2>
-                              <p className="text-sm text-gray-600">{cancelledAppointment}</p>
-                 </div>
+        <div className="bg-white shadow-lg rounded-2xl p-5 flex items-center gap-4 hover:shadow-xl transition-all duration-300">
+          <div className="flex items-center justify-center text-blue-900"><BookX size={32}/></div>
+          <div className="w-[2px] h-12 bg-gray-300"></div>
+          <div>
+             <h2 className="font-semibold  text-gray-700  text-base">Cancelled Appointments</h2>
+             <p className="text-2xl font-bold text-red-600">{completedAppointment}</p>
+          </div>
+        </div>
+
+
 
 
           <div className="bg-white shadow-md rounded-xl p-4">

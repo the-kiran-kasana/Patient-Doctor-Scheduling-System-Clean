@@ -12,7 +12,7 @@ const AppointmentSchema = new mongoose.Schema({
 //                endTime: { type: String },
                 Time: { type: String},
                 googleEventId: { type: String },
-                status : {type:String ,enum:["scheduled" , "completed" ,"cancelled"] ,  required:true ,default:"scheduled"}
+                status : {type:String ,enum:["scheduled" , "completed" ,"cancelled"],  required:true ,default:"scheduled"}
 
 }, { timestamps: true });
 
