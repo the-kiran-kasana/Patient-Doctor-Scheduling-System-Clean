@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Star } from "lucide-react";
 
 export default function FeedbackForm({ doctorId, appointmentId }) {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -7,6 +8,7 @@ export default function FeedbackForm({ doctorId, appointmentId }) {
   const [rating, setRating] = useState(5);
   const [review, setReview] = useState("");
   const [message, setMessage] = useState("");
+  const [hover, setHover] = useState(0);
 
   const token = localStorage.getItem("token");
 //   const API_BASE = "http://localhost:6060/feedback";
@@ -66,18 +68,16 @@ export default function FeedbackForm({ doctorId, appointmentId }) {
         <h2 className="text-xl font-semibold mb-4 text-blue-800">Submit Your Feedback</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <label className="font-medium">Rating:</label>
-            <select
-              value={rating}
-              onChange={(e) => setRating(Number(e.target.value))}
-              className="border p-2 rounded"
-            >
-              {[1, 2, 3, 4, 5].map((n) => (
-                <option key={n} value={n}>
-                  {n} ⭐
-                </option>
-              ))}
-            </select>
+            <label className="font-medium">Rate our services!</label>
+             <div className="flex item-center gap-2">
+                  {[1,2,3,4,5].map((star) =>(
+                    <Star key={star} size={28} className={`cursor-pointer ${(hover || rating) >= star ? "text-yellow-400 fill-yellow-400" : : "text-gray-400"}`}
+                    onClick={() => setRating(star)}
+                    onMouseEnter={() => setHover(star)}
+                    onMouseLeave={() => setHover(0)}
+                    />
+                  )}
+             </div>
           </div>
 
           <textarea
