@@ -202,56 +202,111 @@ useEffect(() => {
       </aside>
 
 
-   {/* MIDDLE SECTION */}
-   <main className="flex-1 px-10 py-8 gap-10 grid grid-cols-2">
 
-     {/* Title */}
-     <div className="bg-white p-6 rounded-xl shadow-lg font-bold text-2xl ">
-      <h2 className=" p-6 font-bold text-2xl text-center text-blue-800">Today Appointment </h2>
+
+
+
+   {/* MIDDLE SECTION */}
+  <main className="flex-1 p-10 grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-100 min-h-screen">
+
+    {/* ===== Today Appointment ===== */}
+    <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-gray-100">
+
+      <h2 className="mb-6 text-2xl font-bold text-center text-blue-800 tracking-wide">
+        Today Appointments
+      </h2>
 
       {todayAppointment && todayAppointment.length > 0 ? (
-               todayAppointment.map((h, id) => (
-                 <div key={id} className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
-                 <h2 className="font-semibold text-lg">{h.userId?.username}</h2>
-                   <h2 className="font-semibold text-lg">{h.appointmentTypes}</h2>
-                   <p>{h.reason}</p>
-                   <p className="text-sm text-gray-700">{h.status}</p>
-                   <div className="text-right font-medium">{h.startTime}</div>
-                 </div>
-               ))
-             ) : (
-               <p className="text-gray-500">No appointments found</p>
-             )}
-     </div>
+        todayAppointment.map((h, id) => (
+          <div
+            key={id}
+            className="p-4 mb-4 rounded-xl border-l-4 border-blue-600 bg-gradient-to-r from-blue-50 to-white shadow-sm hover:shadow-md transition"
+          >
+            {/* Top Row */}
+            <div className="flex justify-between items-start">
+              <h2 className="font-semibold text-lg text-gray-800">
+                {h.userId?.username}
+              </h2>
+              <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
+                {h.appointmentTypes}
+              </span>
+            </div>
 
-     {/* Appointment List */}
-     <div className="bg-white p-6 rounded-xl shadow-lg max-w-full">
-     <h2 className=" p-6 font-bold text-2xl text-center text-blue-800"> Upcoming Appointment </h2>
-       {fetchAppointment && fetchAppointment.length > 0 ? (
-         fetchAppointment.map((h, id) => (
-           <div key={id} className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
-           <h2 className="font-semibold text-lg">{h.userId?.username}</h2>
-             <h2 className="font-semibold text-lg">{h.appointmentTypes}</h2>
-             <p>{h.reason}</p>
-             <p className="text-sm text-gray-700">{h.status}</p>
-             <div className="text-right font-medium">{h.startTime}</div>
-             <div className="text-right font-medium">
-               {new Date(h.BookDate).toLocaleDateString("en-GB", {
-                 day: "2-digit",
-                 month: "short",
-                 year: "numeric"
-               })}
-             </div>
+            {/* Description */}
+            <p className="text-sm text-gray-600 mt-1">{h.reason}</p>
 
+            {/* Bottom Row */}
+            <div className="flex justify-between items-center mt-3">
+              <span className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full capitalize">
+                {h.status}
+              </span>
+              <span className="text-sm font-semibold text-gray-700">
+                {h.startTime}
+              </span>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-gray-500">No appointments today</p>
+      )}
+    </div>
 
-           </div>
-         ))
-       ) : (
-         <p className="text-gray-500">No appointments found</p>
-       )}
-     </div>
+    {/* ===== Upcoming Appointment ===== */}
+    <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-gray-100">
 
-   </main>
+      <h2 className="mb-6 text-2xl font-bold text-center text-purple-800 tracking-wide">
+        Upcoming Appointments
+      </h2>
+
+      {fetchAppointment && fetchAppointment.length > 0 ? (
+        fetchAppointment.map((h, id) => (
+          <div
+            key={id}
+            className="p-4 mb-4 rounded-xl border-l-4 border-purple-600 bg-gradient-to-r from-purple-50 to-white shadow-sm hover:shadow-md transition"
+          >
+            {/* Top Row */}
+            <div className="flex justify-between items-start">
+              <h2 className="font-semibold text-lg text-gray-800">
+                {h.userId?.username}
+              </h2>
+              <span className="px-3 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">
+                {h.appointmentTypes}
+              </span>
+            </div>
+
+            {/* Description */}
+            <p className="text-sm text-gray-600 mt-1">
+              {h.reason}
+            </p>
+
+            {/* Date & Status */}
+            <div className="flex justify-between items-center mt-3">
+              <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full capitalize">
+                {h.status}
+              </span>
+
+              <div className="text-right">
+                <p className="text-sm font-semibold text-gray-700">
+                  {h.startTime}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {new Date(h.BookDate).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                  })}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-gray-500">No upcoming appointments</p>
+      )}
+    </div>
+
+  </main>
+
 
 
 
