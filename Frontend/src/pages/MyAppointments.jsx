@@ -21,18 +21,19 @@ function MyAppointments() {
     const fetchAppointments = async () => {
       try {
         const res = await axios.get(
-          `${API_BASE}/appointment/UserAppointments/${userId}`,
+          `${API_BASE}/appointment/getUserAppointments/${userId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         console.log("API RESPONSE =>", res.data);
 
         // ✅ Force data into array
-        const appointments = Array.isArray(res.data.appointments)
-          ? res.data.appointments
-          : [res.data.appointments];
+       const appointments = Array.isArray(res.data.appointments)
+         ? res.data.appointments
+         : [res.data.appointments];
 
-        setUserAppointments(appointments.filter(Boolean)); // remove null/undefined
+       setUserAppointments(appointments.filter(Boolean));
+ // remove null/undefined
       } catch (err) {
         console.error("Error fetching appointments:", err);
         setUserAppointments([]);

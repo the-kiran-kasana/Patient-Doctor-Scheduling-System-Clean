@@ -292,8 +292,8 @@ AppointmentRoutes.get("/upcoming", authMiddleware(["doctor"]), async (req, res) 
 
 AppointmentRoutes.get("/getUserAppointments/:id", authMiddleware(["patient"]), async (req, res) => {
   try {
-    let id = req.params.id;
-    const appointments = await AppointmentModel.findOne({userId:id}).sort({ BookDate: 1 });
+    const id = req.params.id;
+    const appointments = await AppointmentModel.find({ userId: id }).sort({ BookDate: 1 });
 
     if (!appointments || appointments.length === 0) {
       return res.status(404).json({ msg: "No appointments found" });
@@ -309,23 +309,40 @@ AppointmentRoutes.get("/getUserAppointments/:id", authMiddleware(["patient"]), a
 
 
 
-AppointmentRoutes.get("/UserAppointments/:id", authMiddleware(["patient"]), async (req, res) => {
-  try {
-    let id = req.params.id;
-    const appointments = await AppointmentModel.findOne({userId:id})
 
-    if (!appointments || appointments.length === 0) {
-      return res.status(404).json({ msg: "No appointments found" });
-    }
+//AppointmentRoutes.get("/getUserAppointments/:id", authMiddleware(["patient"]), async (req, res) => {
+//  try {
+//    let id = req.params.id;
+//    const appointments = await AppointmentModel.findOne({userId:id}).sort({ BookDate: 1 });
+//
+//    if (!appointments || appointments.length === 0) {
+//      return res.status(404).json({ msg: "No appointments found" });
+//    }
+//
+//    res.status(200).json({ message: "Appointments fetched successfully", appointments });
+//  } catch (err) {
+//    res.status(500).json({ msg: "Something went wrong while fetching appointments" });
+//  }
+//});
 
-    res.status(200).json({ message: "Appointments fetched successfully", appointments });
-  } catch (err) {
-    res.status(500).json({ msg: "Something went wrong while fetching appointments" });
-  }
-});
 
 
 
+//
+//AppointmentRoutes.get("/getAppointments/:id", authMiddleware(["patient"]), async (req, res) => {
+//  try {
+//    let id = req.params.id;
+//    const appointments = await AppointmentModel.find({userId:id}).sort({ BookDate: 1 });
+//
+//    if (!appointments || appointments.length === 0) {
+//      return res.status(404).json({ msg: "No appointments found" });
+//    }
+//
+//    res.status(200).json({ message: "Appointments fetched successfully", appointments });
+//  } catch (err) {
+//    res.status(500).json({ msg: "Something went wrong while fetching appointments" });
+//  }
+//});
 
 
 
