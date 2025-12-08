@@ -104,9 +104,9 @@ export default function FeedbackForm() {
 
       {/* REVIEWS */}
 
-      <h2 className="text-xl font-semibold mb-2">
-        Reviews ({feedbacks.length}) ⭐{avgRating}
-      </h2>
+{/*       <h2 className="text-xl font-semibold mb-2"> */}
+{/*         Reviews ({feedbacks.length}) ⭐{avgRating} */}
+{/*       </h2> */}
 
       {feedbacks.map((f) => (
         <div key={f._id} className="bg-white p-4 rounded shadow mb-3">

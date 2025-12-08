@@ -25,7 +25,7 @@ function MyAppointments() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        console.log("API RESPONSE =>", res.data);
+        console.log("API RESPONSE =>", res.data.appointments);
 
         // ✅ Force data into array
        const appointments = Array.isArray(res.data.appointments)
@@ -107,12 +107,29 @@ function MyAppointments() {
                 <strong>Time:</strong> {item.startTime}
               </p>
 
-              <button
-                onClick={() => handleCancel(item._id)}
-                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
-              >
-                Cancel Appointment
-              </button>
+{/*               <button */}
+{/*                 onClick={() => handleCancel(item._id)} */}
+{/*                 className="bg-red-500 text-white px-1  gap-1 rounded-md hover:bg-red-600 transition" */}
+{/*               > */}
+{/*                 Cancel */}
+{/*               </button> */}
+
+
+               <span
+                                  className={`px-3 py-1 rounded-full text-xs font-semibold
+                                    ${
+                                      item.status === "completed"
+                                        ? "bg-green-100 text-green-700"
+                                        : item.status === "cancelled"
+                                        ? "bg-red-100 text-red-700"
+                                        : "bg-yellow-100 text-yellow-700"
+                                    }`}
+                                >
+                                  {item.status}
+                                </span>
+
+
+
             </div>
           ))}
         </div>
