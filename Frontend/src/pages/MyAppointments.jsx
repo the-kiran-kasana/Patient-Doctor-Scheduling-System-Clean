@@ -1,33 +1,48 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 function MyAppointments() {
-  const [appointments, setAppointments] = useState([]);
+  const [userAppointments, setUserAppointments] = useState([]); // ✅ always array
   const [loading, setLoading] = useState(true);
 
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
   const token = localStorage.getItem("token");
 
+  let userId = null;
+  if (token) {
+    const decoded = jwtDecode(token);
+    userId = decoded.userId;
+  }
+
   useEffect(() => {
+    if (!userId || !token) return;
+
     const fetchAppointments = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:6060/appointments/my-appointments",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `${API_BASE}/appointment/UserAppointments/${userId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-        setAppointments(res.data);
-        setLoading(false);
+
+        console.log("API RESPONSE =>", res.data);
+
+        // ✅ Force data into array
+        const appointments = Array.isArray(res.data.appointments)
+          ? res.data.appointments
+          : [res.data.appointments];
+
+        setUserAppointments(appointments.filter(Boolean)); // remove null/undefined
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching appointments:", err);
+        setUserAppointments([]);
+      } finally {
         setLoading(false);
       }
     };
 
     fetchAppointments();
-  }, [token]);
+  }, [API_BASE, token, userId]);
 
   const handleCancel = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this appointment?")) {
@@ -35,16 +50,12 @@ function MyAppointments() {
     }
 
     try {
-      await axios.delete(
-        `http://localhost:6060/appointments/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(`${API_BASE}/appointments/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      setAppointments((prev) => prev.filter((a) => a._id !== id));
+      // ✅ Remove deleted appointment from UI
+      setUserAppointments((prev) => prev.filter((a) => a._id !== id));
     } catch (err) {
       console.error(err);
       alert("Failed to cancel appointment");
@@ -61,13 +72,13 @@ function MyAppointments() {
         My Appointments
       </h1>
 
-      {appointments.length === 0 ? (
+      {userAppointments.length === 0 ? (
         <p className="text-center text-gray-600">
           No appointments found
         </p>
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {appointments.map((item) => (
+          {userAppointments.map((item) => (
             <div
               key={item._id}
               className="bg-white p-5 rounded-xl shadow-md border"
@@ -90,8 +101,9 @@ function MyAppointments() {
                   day: "2-digit",
                   month: "short",
                   year: "numeric",
-                })}{" "}
-                | <strong>Time:</strong> {item.startTime}
+                })}
+                {" | "}
+                <strong>Time:</strong> {item.startTime}
               </p>
 
               <button
