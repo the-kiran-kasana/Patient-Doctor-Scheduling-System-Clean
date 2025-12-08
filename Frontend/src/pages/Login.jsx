@@ -1,20 +1,33 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const API_BASE = import.meta.env.VITE_API_BASE_URL;
+//   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-//   const API_BASE = "http://localhost:6060";
+//   let userToken = localStorage.getItem("token");
+//   let decode = jwtDecode(userToken);
+//   let role = decode.role;
+//
+//   localStorage.setItem("role" , role);
+
+
+
+
+
+  const API_BASE = "http://localhost:6060";
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
 
     try {
+
+
       const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -24,11 +37,16 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        // Save token to localStorage
-        localStorage.setItem("token", data.token);
 
-        // Navigate to dashboard
-        navigate("/AnalyticsDashboard");
+navigate("/PatientDashboard");
+//         if (role === "doctor") {
+//             navigate("/DoctorDashboard");
+//           } else if (role === "patient") {
+//             navigate("/PatientDashboard");
+//           } else {
+//             navigate("/"); // safety fallback
+//           }
+
       } else {
         setError(data.msg || "Login failed. Please try again.");
       }

@@ -272,8 +272,8 @@ useEffect(() => {
         <div className="bg-white shadow-md rounded-xl p-4">
               <h2 className="font-bold text-lg text-blue-900 mb-3">My Appointments</h2>
               <div className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
-                <h3 className="font-semibold">{appointmentData?.doctorName} ({appointmentData?.appointmentTypes})</h3>
-                <p className="text-sm text-gray-600">{appointmentData?.BookDate} • {appointmentData?.startTime}</p>
+                <h3 className="font-semibold">{appointmentData?.doctorName} {appointmentData?.appointmentTypes}</h3>
+                <p className="text-sm text-gray-600">{appointmentData?.BookDate}  {appointmentData?.startTime}</p>
                 <p className="text-sm text-gray-600">{appointmentData?.reason}</p>
                 <p className="text-sm text-gray-600">{appointmentData?.status}</p>
               </div>

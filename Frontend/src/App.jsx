@@ -14,9 +14,18 @@ import "./App.css";
 import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 
-function PrivateRoute({ children }) {
+
+function PrivateRoute({ children , roleRequired }) {
+
   const token = localStorage.getItem("token");
+  const userRole = localStorage.getItem("role");
+
   return token ? children : <Navigate to="/login" />;
+
+  if(roleRequired && userRole !== roleRequired){
+     return <Navigate to="/" />
+  }
+  return children;
 }
 
 
@@ -32,8 +41,8 @@ function App() {
         <Route path="/AnalyticsDashboard" element={<PrivateRoute> <AnalyticsDashboard /> </PrivateRoute>} />
          <Route path="/Feedback" element={<PrivateRoute> <FeedbackForm /> </PrivateRoute>} />
          <Route path="/upcoming-appointments" element={<PrivateRoute> <UpcomingAppointments /> </PrivateRoute>} />
-         <Route path="/PatientDashboard" element={<PrivateRoute> <PatientDashboard /> </PrivateRoute>} />
-         <Route path="/DoctorDashboard" element={<PrivateRoute> <DoctorDashboard /> </PrivateRoute>} />
+         <Route path="/PatientDashboard" element={<PrivateRoute roleRequired="patient"> <PatientDashboard /> </PrivateRoute>} />
+         <Route path="/DoctorDashboard" element={<PrivateRoute roleRequired="doctor"> <DoctorDashboard /> </PrivateRoute>} />
 {/*          <Route path="/BookAppointment" element={<PrivateRoute> <BookAppointment /> </PrivateRoute>} /> */}
       </Routes>
     </div>
