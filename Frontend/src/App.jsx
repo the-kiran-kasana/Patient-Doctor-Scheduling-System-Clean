@@ -8,6 +8,8 @@ import DoctorDashboard from "./components/DoctorDashboard";
 import UpcomingAppointments from "./pages/UpcomingAppointments";
 import BookAppointment from "./pages/BookAppointment";
 import  FeedbackForm from "./pages/FeedbackForm";
+import  Unauthorized from "./pages/Unauthorized";
+import  MyAppointments from "./pages/MyAppointments";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import "./App.css";
@@ -15,35 +17,47 @@ import React, { useState } from "react";
 import { Navigate } from "react-router-dom";
 
 
-function PrivateRoute({ children , roleRequired }) {
+function PrivateRoute({ children , allowedRoles }) {
 
   const token = localStorage.getItem("token");
   const userRole = localStorage.getItem("role");
 
-  return token ? children : <Navigate to="/login" />;
+  console.log("role" ,userRole)
 
-  if(roleRequired && userRole !== roleRequired){
-     return <Navigate to="/" />
+
+  if (!token) {
+    return <Navigate to="/login" />;
   }
-  return children;
+
+  if (!allowedRoles.includes(userRole)) {
+      return <Navigate to="/Unauthorized" />;
+  }
+
+//   return token ? children : <Navigate to="/login" />;
+
+   return children;
 }
 
 
 function App() {
   return (
     <div>
+
       <Header />
+
 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/Unauthorized" element={<Unauthorized />} />
         <Route path="/Register" element={<Register />} />
-        <Route path="/AnalyticsDashboard" element={<PrivateRoute> <AnalyticsDashboard /> </PrivateRoute>} />
-         <Route path="/Feedback" element={<PrivateRoute> <FeedbackForm /> </PrivateRoute>} />
-         <Route path="/upcoming-appointments" element={<PrivateRoute> <UpcomingAppointments /> </PrivateRoute>} />
-         <Route path="/PatientDashboard" element={<PrivateRoute roleRequired="patient"> <PatientDashboard /> </PrivateRoute>} />
-         <Route path="/DoctorDashboard" element={<PrivateRoute roleRequired="doctor"> <DoctorDashboard /> </PrivateRoute>} />
-{/*          <Route path="/BookAppointment" element={<PrivateRoute> <BookAppointment /> </PrivateRoute>} /> */}
+        <Route path="/AnalyticsDashboard" element={<PrivateRoute allowedRoles={["doctor"]}> <AnalyticsDashboard /> </PrivateRoute>} />
+         <Route path="/Feedback" element={<PrivateRoute allowedRoles={["patient"]}> <FeedbackForm /> </PrivateRoute>} />
+         <Route path="/upcoming-appointments" element={<PrivateRoute allowedRoles={["doctor"]}> <UpcomingAppointments /> </PrivateRoute>} />
+         <Route path="/PatientDashboard" element={<PrivateRoute allowedRoles={["patient"]}> <PatientDashboard/> </PrivateRoute>} />
+         <Route path="/MyAppointments" element={<PrivateRoute allowedRoles={["patient"]}> <MyAppointments/> </PrivateRoute>} />
+         <Route path="/DoctorDashboard" element={<PrivateRoute allowedRoles={["doctor"]}> <DoctorDashboard /> </PrivateRoute>} />
+       <Route path="/BookAppointment" element={<PrivateRoute> <BookAppointment /> </PrivateRoute>} />
       </Routes>
     </div>
   );

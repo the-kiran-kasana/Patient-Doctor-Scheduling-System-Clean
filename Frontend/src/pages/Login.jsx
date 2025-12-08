@@ -9,24 +9,24 @@ export default function Login() {
   const navigate = useNavigate();
 //   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-//   let userToken = localStorage.getItem("token");
-//   let decode = jwtDecode(userToken);
-//   let role = decode.role;
-//
-//   localStorage.setItem("role" , role);
+  let userToken = localStorage.getItem("token");
+  let decode = jwtDecode(userToken);
+  let role = decode.role;
+
 
 
 
 
 
   const API_BASE = "http://localhost:6060";
+
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
 
     try {
-
 
       const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
@@ -37,15 +37,18 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
+         localStorage.setItem("token", data.token);
+         localStorage.setItem("role", role);
 
-navigate("/PatientDashboard");
-//         if (role === "doctor") {
-//             navigate("/DoctorDashboard");
-//           } else if (role === "patient") {
-//             navigate("/PatientDashboard");
-//           } else {
-//             navigate("/"); // safety fallback
-//           }
+
+
+        if (role === "doctor") {
+            navigate("/DoctorDashboard");
+          } else if (role === "patient") {
+            navigate("/PatientDashboard");
+          } else {
+            navigate("/"); // safety fallback
+          }
 
       } else {
         setError(data.msg || "Login failed. Please try again.");
