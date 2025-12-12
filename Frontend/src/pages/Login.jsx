@@ -46,12 +46,16 @@ const handleLogin = async (e) => {
       // Decode token
       let decode = jwtDecode(data.token);
       let role = decode.role;
+      let doctr = decode.username;
+       console.log("dactar name" , doctr)
 
       // Save role
       localStorage.setItem("role", role);
+      localStorage.setItem("doctorName", doctr);
 
       // Redirect
       if (role === "doctor") {
+
         navigate("/DoctorDashboard");
       } else if (role === "patient") {
         navigate("/PatientDashboard");
@@ -82,48 +86,6 @@ const handleLogin = async (e) => {
 
 
 
-
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-//     setError("");
-//
-//
-//     try {
-//
-//       const response = await fetch(`${API_BASE}/auth/login`, {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ email, password }),
-//       });
-//
-//       const data = await response.json();
-//
-//       if (response.ok) {
-//
-//          let userToken = localStorage.getItem("token");
-//           let decode = jwtDecode(userToken);
-//
-//           let role = decode.role;
-//
-//           localStorage.setItem("role", role);
-//
-//
-//         if (role === "doctor") {
-//             navigate("/DoctorDashboard");
-//           } else if (role === "patient") {
-//             navigate("/PatientDashboard");
-//           } else {
-//             navigate("/"); // safety fallback
-//           }
-//
-//       } else {
-//         setError(data.msg || "Login failed. Please try again.");
-//       }
-//     } catch (err) {
-//       console.error(err);
-//       setError("Something went wrong. Please try again.");
-//     }
-//   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200">

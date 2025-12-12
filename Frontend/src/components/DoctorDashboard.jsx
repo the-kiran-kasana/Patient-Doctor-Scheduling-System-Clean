@@ -3,7 +3,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
-import { Cog , MessageSquare , CalendarDays ,LayoutDashboard ,ChartNoAxesColumn, CalendarCheck, Clock, User, Loader2 , BookX , ClipboardClock} from "lucide-react";
+import { Cog , MessageSquare , CalendarDays ,LayoutDashboard ,CircleCheckBig,CircleX ,ChartNoAxesColumn, CalendarCheck, Clock, User, Loader2 , BookX , ClipboardClock} from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 export const AppointmentContext = createContext();
 
@@ -29,6 +29,7 @@ export default function DoctorDashboard() {
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [highlightDates, setHighlightDates] = useState([]);
+  const [isCompleted, setIsCompleted] = useState(false);
 
 
 
@@ -41,17 +42,15 @@ export default function DoctorDashboard() {
 
   const decoded = jwtDecode(token);
   const userId = decoded.userId;
+  const DoctorName = decoded.username;
 
-  const doctorsList = [ "Dr. Aman Shah","Dr. Kavita Rao", "Dr. Riya Sharma","Dr. Arjun Khanna","Dr. Sejal Mehta","Dr. Aman Gupta", "Dr. Manoj Yadav", ];
-
-  const slots = ["09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "02:00 PM","02:30 PM", "03:00 PM", "03:30 PM",];
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 
 
 const formatDate = (date) => {
-  return date.toLocaleDateString("en-CA"); // gives "YYYY-MM-DD" in LOCAL timezone
+  return date.toLocaleDateString("en-CA");
 };
 
 
@@ -159,24 +158,30 @@ const tileClassName = ({ date, view }) => {
   return null;
 };
 
+
+
 const handleUpdateStatus = async (appointmentId, newStatus) => {
   const token = localStorage.getItem("token");
 
   try {
-    const res = await axios.patch(
+    await axios.patch(
       `${API_BASE}/appointment/update/${appointmentId}`,
       { status: newStatus },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    console.log("Updated appointment:", res.data.updatedAppointment);
+    // Refresh data after update
+    await handleAppointment();
+    await getAppointments();
 
-    // Refresh appointment list after update
-    getAppointments(); // your function to fetch appointments
   } catch (err) {
     console.error("Error updating appointment status:", err);
   }
 };
+
+
+
+
 
 
 
@@ -289,23 +294,23 @@ useEffect(() => {
   <main className="flex-1 p-10 grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-100 min-h-screen">
 
     {/* ===== Today Appointment ===== */}
-    <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-gray-100">
+    <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-gray-100 w-full">
 
-      <h2 className="mb-6 text-2xl font-bold text-center text-blue-800 tracking-wide">
+      <h2 className="mb-6 text-xl md:text-2xl font-bold text-center text-blue-800 tracking-wide">
         Today Appointments
       </h2>
 
-      {todayAppointment && todayAppointment.length > 0 ? (
+      {todayAppointment.length > 0 ? (
         todayAppointment.map((h, id) => (
           <div
             key={id}
-            className="p-4 mb-4 rounded-xl border-l-4 border-blue-600 bg-gradient-to-r from-blue-50 to-white shadow-sm hover:shadow-md transition"
+            className="p-4 mb-4 rounded-xl border-l-4 border-blue-600 bg-gradient-to-r
+            from-blue-50 to-white shadow-sm hover:shadow-md transition w-full"
           >
-            {/* Top Row */}
-            <div className="flex justify-between items-start">
-              <h2 className="font-semibold text-lg text-gray-800">
-                {h.userId?.username}
-              </h2>
+
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
+              <h2 className="font-semibold text-lg text-gray-800">{h.userId?.username}</h2>
               <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
                 {h.appointmentTypes}
               </span>
@@ -314,28 +319,40 @@ useEffect(() => {
             {/* Description */}
             <p className="text-sm text-gray-600 mt-1">{h.reason}</p>
 
-            {/* Bottom Row */}
-            <div className="flex justify-between items-center mt-3">
+            {/* Status + Time + Button */}
+            <div className="flex flex-col sm:flex-row justify-between items-center mt-3 gap-3">
+
               <span className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full capitalize">
                 {h.status}
               </span>
 
-
-
-           <button className="text-red-700 border px-3 py-1 rounded"onClick={() => handleUpdateStatus(h._id, "cancel")}> Cancel </button>
-           <button className="text-green-700 border px-3 py-1 rounded" onClick={() => handleUpdateStatus(h._id, "completed")} > Complete</button>
-
+              <button
+                className="text-blue-900 px-3 py-1 text-xs rounded bg-blue-100"
+                onClick={() => handleUpdateStatus(h._id, h.status === "completed" ? "cancelled" : "completed")}
+              >
+                {h.status === "completed" ? "Not Completed" : "Is Completed"}
+              </button>
 
               <span className="text-sm font-semibold text-gray-700">
                 {h.startTime}
               </span>
             </div>
+
           </div>
         ))
       ) : (
         <p className="text-center text-gray-500">No appointments today</p>
       )}
     </div>
+
+
+
+
+
+
+
+
+
 
     {/* ===== Upcoming Appointment ===== */}
     <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-gray-100">
@@ -446,7 +463,7 @@ useEffect(() => {
           <div className="w-[2px] h-12 bg-gray-300"></div>
           <div>
              <h2 className="font-semibold  text-gray-700  text-base">Cancelled Appointments</h2>
-             <p className="text-2xl font-bold text-red-600">{completedAppointment}</p>
+             <p className="text-2xl font-bold text-red-600">{cancelledAppointment}</p>
           </div>
         </div>
 

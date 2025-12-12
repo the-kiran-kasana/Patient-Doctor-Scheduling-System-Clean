@@ -21,6 +21,9 @@ export default function PatientDashboard() {
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(""); // user selected date
+  const [selectedDoctor, setSelectedDoctor] = useState("");
 
 
 
@@ -37,6 +40,44 @@ export default function PatientDashboard() {
   const slots = ["09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "02:00 PM","02:30 PM", "03:00 PM", "03:30 PM",];
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
+
+
+const availableTime = async () => {
+  try {
+    const response = await axios.get(
+      `${API_BASE}/appointment/showAppointment`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const all = response.data.appointments;
+
+    const upcoming = all.filter(
+      appt => appt.status === "scheduled"
+    );
+
+    setUpcomingAppointments(upcoming);
+
+  } catch (err) {
+    console.error("Error fetching appointments:", err);
+  }
+};
+
+const isSlotBooked = (slotTime) => {
+  if (!selectedDate || !selectedDoctor) return false;
+
+  return upcomingAppointments.some(appt => {
+    const apptDate = new Date(appt.BookDate).toDateString();
+    const selected = new Date(selectedDate).toDateString();
+
+    return (
+      appt.doctorId?._id === selectedDoctor &&  // doctor match
+      apptDate === selected &&                 // date match
+      appt.startTime === slotTime              // time match
+    );
+  });
+};
+
 
 
 
@@ -78,6 +119,8 @@ const getAppointments = async () => {
     );
 
     const appts = response.data.appointments || [];
+
+
 
     if (appts.length === 0) {
       setAppointmentData("No Appointments found");
@@ -216,24 +259,34 @@ useEffect(() => {
             </div>
 
             {/* Time Slots */}
-            <div>
-              <label className="font-semibold text-gray-700">Select Time Slot</label>
+           <div>
+             <label className="font-semibold text-gray-700">Select Time Slot</label>
 
-              <div className="grid grid-cols-3 gap-3 mt-2">
-                {slots.map((time) => (
-                  <button
-                    type="button"
-                    key={time}
-                    onClick={() => setSelectedSlot(time)}
-                    className={`p-2 rounded border ${
-                      selectedSlot === time ? "bg-blue-700 text-white" : "bg-gray-200"
-                    }`}
-                  >
-                    {time}
-                  </button>
-                ))}
-              </div>
-            </div>
+             <div className="grid grid-cols-3 gap-3 mt-2">
+               {slots.map((time) => {
+                 const booked = isSlotBooked(time);
+
+                 return (
+                   <button
+                     type="button"
+                     key={time}
+                     disabled={booked}
+                     onClick={() => !booked && setSelectedSlot(time)}
+                     className={`p-2 rounded border text-sm
+                       ${selectedSlot === time ? "bg-blue-700 text-white" : ""}
+                       ${booked
+                         ? "bg-red-200 text-red-700 cursor-not-allowed"
+                         : "bg-gray-200 hover:bg-gray-300"}
+                     `}
+                   >
+                     {time}
+                   </button>
+                 );
+               })}
+             </div>
+           </div>
+
+
 
             {/* Symptoms */}
             <div>

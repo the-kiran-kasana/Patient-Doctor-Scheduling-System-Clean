@@ -22,7 +22,6 @@ function Header() {
     setToken(null);
     setUserRole(null);
 
-    // 3. Navigate to login page
     navigate("/login");
 
     // 4. Finally refresh the page after navigation

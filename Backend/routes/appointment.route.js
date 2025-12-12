@@ -290,7 +290,7 @@ AppointmentRoutes.get("/upcoming", authMiddleware(["doctor"]), async (req, res) 
 
 
 
-AppointmentRoutes.get("/getUserAppointments/:id", authMiddleware(["patient"]), async (req, res) => {
+AppointmentRoutes.get("/getUserAppointments/:id", authMiddleware(["patient" , "doctor"]), async (req, res) => {
   try {
     const id = req.params.id;
     const appointments = await AppointmentModel.find({ userId: id }).sort({ BookDate: 1 });
@@ -342,6 +342,39 @@ AppointmentRoutes.patch("/update/:id", authMiddleware(["doctor"]), async (req, r
     res.status(500).json({ message: "Failed to update appointment", error: err.message });
   }
 });
+
+
+
+
+AppointmentRoutes.get(
+  "/getAppointmentsDoctor/:id",
+  authMiddleware(["doctor"]),
+  async (req, res) => {
+    try {
+      const doctorName = req.params.doctorName;
+
+      const appointments = await AppointmentModel.find({ doctorName })
+        .sort({ BookDate: 1 });
+
+      if (!appointments || appointments.length === 0) {
+        return res.status(404).json({ msg: "No appointments found for this doctor" });
+      }
+
+      res.status(200).json({
+        message: "Appointments fetched successfully",
+        appointments,
+      });
+
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        msg: "Something went wrong while fetching doctor appointments",
+      });
+    }
+  }
+);
+
+
 
 
 
