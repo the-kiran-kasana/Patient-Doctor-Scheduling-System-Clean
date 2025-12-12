@@ -159,7 +159,24 @@ const tileClassName = ({ date, view }) => {
   return null;
 };
 
+const handleUpdateStatus = async (appointmentId, newStatus) => {
+  const token = localStorage.getItem("token");
 
+  try {
+    const res = await axios.patch(
+      `${API_BASE}/appointment/update/${appointmentId}`,
+      { status: newStatus },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    console.log("Updated appointment:", res.data.updatedAppointment);
+
+    // Refresh appointment list after update
+    getAppointments(); // your function to fetch appointments
+  } catch (err) {
+    console.error("Error updating appointment status:", err);
+  }
+};
 
 
 
@@ -302,6 +319,13 @@ useEffect(() => {
               <span className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full capitalize">
                 {h.status}
               </span>
+
+
+
+           <button className="text-red-700 border px-3 py-1 rounded"onClick={() => handleUpdateStatus(h._id, "cancel")}> Cancel </button>
+           <button className="text-green-700 border px-3 py-1 rounded" onClick={() => handleUpdateStatus(h._id, "completed")} > Complete</button>
+
+
               <span className="text-sm font-semibold text-gray-700">
                 {h.startTime}
               </span>

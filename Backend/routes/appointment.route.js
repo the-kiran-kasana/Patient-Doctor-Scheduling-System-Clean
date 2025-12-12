@@ -325,5 +325,24 @@ AppointmentRoutes.get("/getSpecificUserAppointments/:id", authMiddleware(["patie
 
 
 
+// PATCH /appointment/update/:id
+AppointmentRoutes.patch("/update/:id", authMiddleware(["doctor"]), async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { id } = req.params;
+
+    const updatedAppointment = await AppointmentModel.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true }
+    );
+
+    res.status(200).json({ message: "Appointment updated", updatedAppointment });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update appointment", error: err.message });
+  }
+});
+
+
 
 module.exports = { AppointmentRoutes };
