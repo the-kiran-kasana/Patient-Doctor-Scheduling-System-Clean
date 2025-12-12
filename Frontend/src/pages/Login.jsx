@@ -7,57 +7,123 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-//   const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
-  let userToken = localStorage.getItem("token");
-  let decode = jwtDecode(userToken);
-  let role = decode.role;
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
+//
 
 
 
 
 
-
-  const API_BASE = "http://localhost:6060";
-
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
-
-
-    try {
-
-      const response = await fetch(`${API_BASE}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-         localStorage.setItem("token", data.token);
-         localStorage.setItem("role", role);
+//
+//
+//   const API_BASE = "http://localhost:6060";
 
 
 
-        if (role === "doctor") {
-            navigate("/DoctorDashboard");
-          } else if (role === "patient") {
-            navigate("/PatientDashboard");
-          } else {
-            navigate("/"); // safety fallback
-          }
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setError("");
 
-      } else {
-        setError(data.msg || "Login failed. Please try again.");
+  try {
+    const response = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+
+     setTimeout(() => {
+           window.location.reload();
+         }, 100);
+
+
+      // Save token first
+      localStorage.setItem("token", data.token);
+
+      // Decode token
+      let decode = jwtDecode(data.token);
+      let role = decode.role;
+
+      // Save role
+      localStorage.setItem("role", role);
+
+      // Redirect
+      if (role === "doctor") {
+        navigate("/DoctorDashboard");
+      } else if (role === "patient") {
+        navigate("/PatientDashboard");
       }
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong. Please try again.");
+    } else {
+      setError(data.msg || "Login failed. Please try again.");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    setError("Something went wrong. Please try again.");
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+//     setError("");
+//
+//
+//     try {
+//
+//       const response = await fetch(`${API_BASE}/auth/login`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ email, password }),
+//       });
+//
+//       const data = await response.json();
+//
+//       if (response.ok) {
+//
+//          let userToken = localStorage.getItem("token");
+//           let decode = jwtDecode(userToken);
+//
+//           let role = decode.role;
+//
+//           localStorage.setItem("role", role);
+//
+//
+//         if (role === "doctor") {
+//             navigate("/DoctorDashboard");
+//           } else if (role === "patient") {
+//             navigate("/PatientDashboard");
+//           } else {
+//             navigate("/"); // safety fallback
+//           }
+//
+//       } else {
+//         setError(data.msg || "Login failed. Please try again.");
+//       }
+//     } catch (err) {
+//       console.error(err);
+//       setError("Something went wrong. Please try again.");
+//     }
+//   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-100 to-indigo-200">

@@ -3,7 +3,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
-import { Cog , MessageSquare , CalendarDays ,LayoutDashboard , CalendarCheck, Clock, User, Loader2 , BookX , ClipboardClock} from "lucide-react";
+import { Cog , MessageSquare , CalendarDays ,LayoutDashboard ,ChartNoAxesColumn, CalendarCheck, Clock, User, Loader2 , BookX , ClipboardClock} from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 export const AppointmentContext = createContext();
 
@@ -28,6 +28,9 @@ export default function DoctorDashboard() {
   const [calendarDate, setCalendarDate] = useState(new Date());
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [highlightDates, setHighlightDates] = useState([]);
+
+
 
 
 
@@ -47,6 +50,9 @@ export default function DoctorDashboard() {
 
 
 
+const formatDate = (date) => {
+  return date.toLocaleDateString("en-CA"); // gives "YYYY-MM-DD" in LOCAL timezone
+};
 
 
 
@@ -107,21 +113,51 @@ const handleUserData = async () => {
 
 
 
+// Convert any date to YYYY-MM-DD (no timezone issues)
+const toYMD = (inputDate) => {
+  const d = new Date(inputDate);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+};
+
 
 const getAppointments = async () => {
   try {
-    const response = await axios.get(`${API_BASE}/appointment/getUserAppointments/${userId}`, {  headers: { Authorization: `Bearer ${token}` } });
-    if(response.data.appointments.status == "scheduled"){
-       setAppointmentData(response.data.appointments || []);
-    }else{
-       setAppointmentData("No Appointments scheduled");
-       setAppointmentHistoryData(response.data.appointments)
-    }
+    const response = await axios.get(
+      `${API_BASE}/appointment/getUserAppointments/${userId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const allAppointments = response.data.appointments || [];
+
+    // Highlight only upcoming scheduled appointments
+    const upcoming = allAppointments
+      .filter(a => a.status === "scheduled")
+      .map(a => toYMD(a.BookDate));  // Convert to YYYY-MM-DD
+
+    console.log("Highlight dates =>", upcoming);
+
+    setHighlightDates(upcoming);
+    setAppointmentData(allAppointments);
+
   } catch (err) {
-    console.log("Something went wrong while fetching Appointments  data:", err);
+    console.log("Error fetching appointments:", err);
   }
 };
 
+
+const tileClassName = ({ date, view }) => {
+  if (view === "month") {
+    const formatted = toYMD(date);
+
+    if (highlightDates.includes(formatted)) {
+      return "highlight-appointment-date";
+    }
+  }
+  return null;
+};
 
 
 
@@ -135,17 +171,6 @@ const handleImageChange = (e) => {
 };
 
 
-const tileClassName = ({ date, view }) => {
-//   if (view === "month") {
-//     const formatted = date.toISOString().split("T")[0];
-//
-//     const isBooked = appointmentData.some((appt) => appt.BookDate === formatted);
-//
-//     console.log(isBooked)
-//
-//     //return isBooked ? "bg-blue-300 rounded-lg text-white font-bold" : "";
-//   }
-};
 
 
 
@@ -165,25 +190,63 @@ useEffect(() => {
 
   return (
 
-//   <AppointmentContext.Provider value={{ appointments, setAppointments }}>
-//         {children}
-//       </AppointmentContext.Provider>
-
 
     <div className="flex min-h-screen bg-gray-100">
 
       {/* LEFT SIDEBAR */}
-      <aside className="w-64 bg-blue-900 text-white flex flex-col p-6">
+      <aside className="w-64 bg-white/80 backdrop-blur-md shadow-xl text-white flex flex-col p-6">
         <div className="flex flex-col items-center">
-         <div className="relative flex flex-col  rounded-full hover:shadow-[0_0_25px_8px_rgba(0,200,255,0.7)] items-center">
-           <img  src={preview || "https://i.pinimg.com/736x/3f/c1/08/3fc108d3f911ec7995359558b454bc66.jpg"}  className="rounded-full w-22 h-22 shadow-md object-cover" alt="profile" />
-           <input type="file" accept="image/*" onChange={handleImageChange} id="profileUpload"  className="hidden" />
-           <label htmlFor="profileUpload" className="absolute bottom-0 right-0 bg-white-500 text-white p-10 rounded-full cursor-pointer shadow-md" >
-           </label>
-         </div>
+        <div className="relative group flex flex-col items-center">
 
-         <h2 className="mt-3 text-lg font-semibold">Hello, {userData?.username}</h2>
-         <p className="text-lg text-gray-200">{userData?.email}</p>
+          {/* Profile Image */}
+          <img
+            src={
+              preview ||
+              "https://i.pinimg.com/736x/e6/7d/27/e67d27d145deb0aab8adf86a955562b5.jpg"
+            }
+            alt="profile"
+            className="w-25 h-25 rounded-full object-cover shadow-md
+                       transition-all duration-300 group-hover:shadow-[0_0_25px_8px_rgba(0,200,255,0.6)]"
+          />
+
+          {/* Hidden Input */}
+          <input
+            id="profileUpload"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="hidden"
+          />
+
+          {/* Upload Button */}
+          <label
+            htmlFor="profileUpload"
+            className="absolute bottom-0 right-0 bg-pink-200 text-white
+                       p-1 rounded-full cursor-pointer shadow-md hover:bg-indigo-700
+                       transition duration-200 flex items-center justify-center"
+          >
+            {/* Camera Icon */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-3 h-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 7h2l2-3h10l2 3h2v13H3V7zm9 3a4 4 0 110 8 4 4 0 010-8z"
+              />
+            </svg>
+          </label>
+
+        </div>
+
+
+         <h2 className="mt-3 text-lg text-gray-900 font-semibold">Hello, {userData?.username}</h2>
+         <p className="  text-gray-900 text-gray-200">{userData?.email}</p>
 
 {/*           <button className="mt-3 bg-red-500 px-4 py-1 rounded hover:bg-red-700"> Logout</button> */}
         </div>
@@ -192,10 +255,9 @@ useEffect(() => {
 
         <nav className="mt-10 space-y-3">
 
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><LayoutDashboard size={18}/>Dashboard</div>
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><CalendarDays size={18}/><span>My Appointments </span></div>
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><MessageSquare size={18}/><span>My Feedback</span></div>
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"> <Cog size={18} /><span>Setting</span></div>
+          <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded cursor-pointer text-gray-900"><LayoutDashboard size={18}/><Link to="/DoctorDashboard" className="hover:text-yellow-300">Dashboard</Link></div>
+          <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded cursor-pointer text-gray-900"><CalendarDays size={18}/><span><Link to="/upcoming-appointments" className="hover:text-yellow-300">Appointments</Link> </span></div>
+         <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded cursor-pointer text-gray-900"><ChartNoAxesColumn size={18}/><span><Link to="/AnalyticsDashboard" className="hover:text-yellow-300">Analytic</Link></span></div>
         </nav>
 
 
@@ -369,7 +431,13 @@ useEffect(() => {
 
           <div className="bg-white shadow-md rounded-xl p-4">
               <h2 className="font-bold text-lg text-blue-900 mb-2">Calendar</h2>
-              <Calendar onChange={setCalendarDate} value={calendarDate} tileClassName={tileClassName}/>
+              <Calendar
+                onChange={setCalendarDate}
+                value={calendarDate}
+                tileClassName={tileClassName}
+              />
+
+{/*               <Calendar onChange={setCalendarDate} value={calendarDate} tileClassName={tileClassName}/> */}
               <p className="text-sm mt-2 text-gray-700"> Selected Date: {calendarDate.toDateString()}</p>
           </div>
 

@@ -4,50 +4,47 @@ const authMiddleware = require("../middleware/auth.middleware");
 
 const FeedbackRoutes = express.Router();
 
-// ✅ Submit Feedback
+// ------------------------------------------------------
+// POST Feedback (Only Patient)
+// ------------------------------------------------------
 FeedbackRoutes.post("/review", authMiddleware(["patient"]), async (req, res) => {
   try {
     const { rating, review } = req.body;
+    const patientId = req.user._id; // user from token
+
 
     const feedback = await FeedbackModel.create({
       rating,
-      review,
+      review
     });
 
     res.status(201).json({
       message: "Feedback submitted successfully",
       feedback,
     });
-
   } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      message: "Failed to submit feedback",
-      error: err.message,
-    });
+    res
+      .status(500)
+      .json({ message: "Failed to submit feedback", error: err.message });
   }
 });
 
+// ------------------------------------------------------
+// GET: Logged-in User's own feedback only
+// ------------------------------------------------------
+FeedbackRoutes.get("/my", authMiddleware(["patient"]), async (req, res) => {
 
-// ✅ Get all feedback + Avg Rating
-FeedbackRoutes.get("/doctor", async (req, res) => {
+
   try {
-    const feedbacks = await FeedbackModel.find().sort({ createdAt: -1 });
+//    const patientId = req.user._id; // get from token
 
-    const avg =
-      feedbacks.reduce((acc, item) => acc + item.rating, 0) /
-      (feedbacks.length || 1);
+    const feedbacks = await FeedbackModel.find().sort({ createdAt: -1 }).populate("userId", "username  email").lean();
 
-    res.status(200).json({
-      feedbacks,
-      avgRating: avg.toFixed(1),
-    });
-
+    res.status(200).json({ feedbacks });
   } catch (err) {
-    res.status(500).json({
-      message: "Failed to fetch feedbacks",
-      error: err.message,
-    });
+    res
+      .status(500)
+      .json({ message: "Failed to fetch feedbacks", error: err.message });
   }
 });
 

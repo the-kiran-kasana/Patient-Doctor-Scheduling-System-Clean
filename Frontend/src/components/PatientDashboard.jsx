@@ -70,21 +70,38 @@ const handleUserData = async () => {
 
 
 
-
 const getAppointments = async () => {
   try {
-    const response = await axios.get(`${API_BASE}/appointment/getUserAppointments/${userId}`, {  headers: { Authorization: `Bearer ${token}` } });
-    if(response.data.appointments.status == "scheduled"){
-       setAppointmentData(response.data.appointments || []);
-       console.log("Successfully fetched Appointments  data:", response.data.appointments);
-    }else{
-       setAppointmentData("No Appointments scheduled");
-       setAppointmentHistoryData(response.data.appointments)
+    const response = await axios.get(
+      `${API_BASE}/appointment/getSpecificUserAppointments/${userId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    const appts = response.data.appointments || [];
+
+    if (appts.length === 0) {
+      setAppointmentData("No Appointments found");
+      setAppointmentHistoryData([]);
+      return;
     }
+
+    // Filter scheduled appointments
+    const scheduled = appts.filter(a => a.status === "scheduled");
+
+    if (scheduled.length > 0) {
+      setAppointmentData(scheduled);
+      console.log("Scheduled appointments:", scheduled);
+    } else {
+      setAppointmentData("No Appointments scheduled");
+      setAppointmentHistoryData(appts);
+      console.log("All are history:", appts);
+    }
+
   } catch (err) {
-    console.log("Something went wrong while fetching Appointments  data:", err);
+    console.log("Something went wrong while fetching Appointments data:", err);
   }
 };
+
 
 
 
@@ -124,39 +141,30 @@ useEffect(() => {
     <div className="flex min-h-screen bg-gray-100">
 
       {/* LEFT SIDEBAR */}
-      <aside className="w-64 bg-blue-900 text-white flex flex-col p-6">
+      <aside className="w-64 bg-white/80 backdrop-blur-md shadow-xl text-white flex flex-col p-6">
         <div className="flex flex-col items-center">
          <div className="relative flex flex-col  rounded-full hover:shadow-[0_0_25px_8px_rgba(0,200,255,0.7)] items-center">
-           <img  src={preview || "https://i.pinimg.com/736x/3f/c1/08/3fc108d3f911ec7995359558b454bc66.jpg"}  className="rounded-full w-22 h-22 shadow-md object-cover" alt="profile" />
+           <img  src={preview || "https://i.pinimg.com/736x/e6/7d/27/e67d27d145deb0aab8adf86a955562b5.jpg"}  className="rounded-full w-22 h-22 shadow-md object-cover" alt="profile" />
            <input type="file" accept="image/*" onChange={handleImageChange} id="profileUpload"  className="hidden" />
-           <label htmlFor="profileUpload" className="absolute bottom-0 right-0 bg-white-500 text-white p-10 rounded-full cursor-pointer shadow-md" >
+           <label htmlFor="profileUpload" className="absolute bottom-0 right-0 bg-white-500 text-white p-10 rounded-full cursor-pointer " >
            </label>
          </div>
 
-         <h2 className="mt-3 text-lg font-semibold">Hello, {userData?.username}</h2>
-         <p className="text-lg text-gray-200">{userData?.email}</p>
+         <h2 className="mt-3 text-lg text-gray-900 font-semibold">Hello, {userData?.username}</h2>
+         <p className="  text-gray-900 text-gray-200">{userData?.email}</p>
 
 {/*           <button className="mt-3 bg-red-500 px-4 py-1 rounded hover:bg-red-700"> Logout</button> */}
         </div>
 
 
 
-{/* <a href="mailto:kkasanacoder@gmail.com" className=" inline-flex items-center gap-2 px-5 py-2.5 rounded-lg */}
-{/*       bg-transparent border border-cyan-400/40 text-cyan-300 hover:border-cyan-300 hover:text-cyan-200 */}
-{/*       hover:shadow-[0_0_20px_rgba(34,211,238,0.5)] transition-all duration-300 " > */}
-{/*     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"> */}
-{/*       <path d="M2 4h20v16H2V4zm10 7L4 6v2l8 5 8-5V6l-8 5z" /> */}
-{/*     </svg> */}
-{/*     <span>Email</span> */}
-{/*   </a> */}
-{/*    */}
 
         <nav className="mt-10 space-y-3">
 
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><LayoutDashboard size={18}/>Dashboard</div>
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><CalendarDays size={18}/><span>My Appointments </span></div>
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"><MessageSquare size={18}/><span>My Feedback</span></div>
-          <div className="flex items-center gap-2 bg-blue-800 px-4 py-2 rounded cursor-pointer text-white"> <Cog size={18} /><span>Setting</span></div>
+          <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded cursor-pointer text-gray-900"><LayoutDashboard size={18}/><Link to="/PatientDashboard" className="hover:text-yellow-300">Dashboard</Link></div>
+          <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded cursor-pointer text-gray-900"><CalendarDays size={18}/><span><Link to="/MyAppointments" className="hover:text-yellow-300">My Appointments </Link></span></div>
+          <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded cursor-pointer text-gray-900"><MessageSquare size={18}/><span><Link to="/Feedback" className="hover:text-yellow-300">My Feedback</Link></span></div>
+{/*           <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded cursor-pointer text-gray-900"> <Cog size={18} /><span>Setting</span></div> */}
         </nav>
 
 
@@ -262,35 +270,44 @@ useEffect(() => {
         {/* My Appointments */}
         <h2 className="font-bold  text-2xl text-center text-blue-800">Appointment Details</h2>
         <hr />
-        <div className="bg-white shadow-md rounded-xl p-4">
-              <h2 className="font-bold text-lg text-blue-900 mb-3">My Appointments</h2>
-              <div className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded">
-                <h3 className="font-semibold">{appointmentData?.doctorName} {appointmentData?.appointmentTypes}</h3>
+       <div className="bg-white shadow-md rounded-xl p-4">
+         <h2 className="font-bold text-lg text-blue-900 mb-3">My Appointments</h2>
+
+         {Array.isArray(appointmentData) && appointmentData.length > 0 ? (
+           appointmentData.map((appt) => (
+             <div
+               key={appt._id}
+               className="p-3 border-l-4 border-blue-700 bg-blue-50 mb-2 rounded"
+             >
+               <h3 className="font-semibold">
+                 {appt.doctorName} ({appt.appointmentTypes})
+               </h3>
+
                <p className="text-sm text-gray-600">
-                 {appointmentData?.BookDate
-                   ? new Date(appointmentData.BookDate).toLocaleDateString("en-GB", {
+                 {appt.BookDate
+                   ? new Date(appt.BookDate).toLocaleDateString("en-GB", {
                        day: "2-digit",
                        month: "short",
                        year: "numeric",
                      })
                    : "No Date"}{" "}
-                 {appointmentData?.startTime}
+                 {appt.startTime}
                </p>
 
-                <p className="text-sm text-gray-600">{appointmentData?.reason}</p>
-                <p className="text-sm text-gray-600">{appointmentData?.status}</p>
-              </div>
-        </div>
+               <p className="text-sm text-gray-600">{appt.reason}</p>
+               <p className="text-sm text-gray-600 font-semibold text-green-600">
+                 {appt.status}
+               </p>
+             </div>
+           ))
+         ) : (
+           <p className="text-gray-500 text-center">No Appointments Scheduled</p>
+         )}
+       </div>
 
 
-{/*          */}{/* Appointment History */}
-{/*         <div className="bg-white shadow-md rounded-xl p-4"> */}
-{/*           <h2 className="font-bold text-lg text-blue-900">Appointment History</h2> */}
-{/*           <p className="text-sm text-gray-500 mt-2">{appointmentHistoryData?.doctorName}</p> */}
-{/*           <p className="text-sm text-gray-500 mt-2">{appointmentHistoryData?.status}</p> */}
-{/*           <p className="text-sm text-gray-500 mt-2">{appointmentHistoryData?.reason}</p> */}
-{/*           <p className="text-sm text-gray-500 mt-2">{appointmentHistoryData?.BookDate} . {appointmentHistoryData?.startTime}</p> */}
-{/*         </div> */}
+
+
 
         {/* Calendar */}
 
