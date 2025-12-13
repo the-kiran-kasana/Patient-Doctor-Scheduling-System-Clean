@@ -51,11 +51,7 @@ function Header() {
           <Link to="/" className="hover:text-yellow-300">Home</Link>
 
           {/* If NOT logged in → show Login & Signup */}
-          {!token && (
-            <>
-              <Link to="/login" className="hover:text-yellow-300">Login</Link>
-            </>
-          )}
+
 
           {/* PATIENT NAVIGATION */}
           {token && userRole === "patient" && (
@@ -81,7 +77,26 @@ function Header() {
            <Link to="/about" className="hover:text-yellow-300">About</Link>
            <Link to="/contact" className="hover:text-yellow-300">Contact</Link>
 
-            {token && <UserProfileDropdown />}
+            {!token && (
+                       <>
+                         <Link to="/login" className="hover:text-yellow-300">Login/Signup</Link>
+                       </>
+             )}
+
+
+              {token && userRole === "doctor" &&(
+                         <>
+                            {token && <UserProfileDropdown />}
+                         </>
+              )}
+
+               {token &&  userRole === "patient" &&(
+                                       <>
+                                          {token && <UserProfileDropdown />}
+                                       </>
+                            )}
+
+
 
 
         </nav>
