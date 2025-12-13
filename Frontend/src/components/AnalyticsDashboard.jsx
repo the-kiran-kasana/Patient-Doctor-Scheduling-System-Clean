@@ -1,21 +1,3 @@
-//
-// function AnalyticsDashboard() {
-//  return (
-//     <>
-//      <section style={{ textAlign: "center", padding: "1rem", background: "#f4f4f4" }}>
-//           <header>
-//              <h1>Patient-Doctor Scheduling System</h1>
-//             </header>
-//           </section>
-//     </>
-//  )
-// }
-//
-// export default AnalyticsDashboard;
-//
-
-
-
 
 
 import { useEffect, useState } from "react";
