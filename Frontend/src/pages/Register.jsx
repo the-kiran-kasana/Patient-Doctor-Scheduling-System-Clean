@@ -11,7 +11,6 @@ export default function Register() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
-//   const API_BASE = "http://localhost:6060";
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -29,7 +28,7 @@ export default function Register() {
       if (response.ok) {
          alert("Signup successful! Please check your email to verify.");
 
-         const verifySignup = await axios.get(`http://localhost:6060/auth/verify?email=${email}`);
+         const verifySignup = await axios.get(`${API_BASE}/auth/verify?email=${email}`);
          setVerify(verifySignup.data);
 
          navigate("/login");
