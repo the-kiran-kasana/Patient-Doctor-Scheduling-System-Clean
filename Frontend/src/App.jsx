@@ -25,9 +25,7 @@ function PrivateRoute({ children , allowedRoles }) {
 
   const token = localStorage.getItem("token");
   const userRole = localStorage.getItem("role");
-
-  console.log("role" ,userRole)
-
+//   const username =  localStorage.getItem("doctorName")
 
   if (!token) {
     return <Navigate to="/login" />;

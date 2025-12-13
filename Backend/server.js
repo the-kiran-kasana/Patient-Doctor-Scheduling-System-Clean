@@ -51,19 +51,52 @@ app.use(cors({
 
 
 
-
-cron.schedule("0 * * * *", async () => {
+cron.schedule("*/5 * * * *", async () => {
   try {
     const now = new Date();
-    const result = await AppointmentModel.updateMany(
-      { endTime: { $lt: now }, status: { $nin: ["cancelled", "completed"] } },
-      { $set: { status: "cancelled" } }
-    );
-    console.log(`Updated ${result.modifiedCount} expired appointments.`);
+
+    // 1️⃣ Get all scheduled appointments
+    const appointments = await AppointmentModel.find({
+      status: "scheduled"
+    });
+
+    const expiredAppointmentIds = [];
+
+    appointments.forEach((appt) => {
+      // 2️⃣ Extract date (yyyy-mm-dd)
+      const bookDate = new Date(appt.BookDate);
+      const dateStr = bookDate.toISOString().split("T")[0];
+
+      // 3️⃣ Combine date + startTime
+      const appointmentDateTime = new Date(`${dateStr} ${appt.startTime}`);
+
+      // 4️⃣ If appointment time passed → cancel
+      if (appointmentDateTime < now) {
+        expiredAppointmentIds.push(appt._id);
+      }
+    });
+
+    // 5️⃣ Update expired appointments
+    if (expiredAppointmentIds.length > 0) {
+      const result = await AppointmentModel.updateMany(
+        { _id: { $in: expiredAppointmentIds } },
+        { $set: { status: "cancelled" } }
+      );
+
+      console.log(
+        `⏰ Cron Job: Cancelled ${result.modifiedCount} expired appointments`
+      );
+    } else {
+      console.log("⏰ Cron Job: No expired appointments");
+    }
+
   } catch (err) {
-    console.error("Cron job error:", err);
+    console.error("❌ Cron Job Error:", err);
   }
 });
+
+
+
 
 // ✅ Default Route
 app.get("/", (req, res) => {

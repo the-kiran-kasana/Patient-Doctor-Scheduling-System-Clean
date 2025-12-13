@@ -131,7 +131,7 @@ AppointmentRoutes.post("/Book_Appointment", authMiddleware(["doctor", "patient"]
 
 AppointmentRoutes.get("/showAppointment", authMiddleware(["doctor"]), async (req, res) => {
   try {
-    const appointments = await AppointmentModel.find().populate("userId", "username email role").sort({ BookDate: 1 });
+    const appointments = await AppointmentModel.find().populate("userId", "username email role").sort({ BookDate: -1 });
 
 
     if (!appointments || appointments.length === 0) {

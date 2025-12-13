@@ -40,22 +40,16 @@ const handleLogin = async (e) => {
          }, 100);
 
 
-      // Save token first
       localStorage.setItem("token", data.token);
 
-      // Decode token
       let decode = jwtDecode(data.token);
       let role = decode.role;
-      let doctr = decode.username;
-       console.log("dactar name" , doctr)
-
-      // Save role
+      let username = decode.username;
       localStorage.setItem("role", role);
-      localStorage.setItem("doctorName", doctr);
+      localStorage.setItem("username", username);
 
       // Redirect
       if (role === "doctor") {
-
         navigate("/DoctorDashboard");
       } else if (role === "patient") {
         navigate("/PatientDashboard");

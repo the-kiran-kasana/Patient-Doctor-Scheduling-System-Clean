@@ -38,11 +38,12 @@ export default function DoctorDashboard() {
 
 
   const token = localStorage.getItem("token");
+  const username = localStorage.getItem("username");
   const user = JSON.parse(localStorage.getItem("user")) || { name: "Patient Name" };
 
   const decoded = jwtDecode(token);
   const userId = decoded.userId;
-  const DoctorName = decoded.username;
+
 
 
   const API_BASE = import.meta.env.VITE_API_BASE_URL;
@@ -78,12 +79,12 @@ const handleAppointment = async () => {
       { pending: 0, completed: 0, cancelled: 0 }
     );
 
-    const upComing = appointments.filter(appt => ["scheduled"].includes(appt.status))
+    const upComing = appointments.filter(appt => ["scheduled"].includes(appt.status) && [username].includes(appt.doctorName))
     setFetchAppointment(upComing);
 
     const today = new Date().toISOString().split("T")[0];
 
-    const todayAppointments = appointments.filter(appt =>  appt.BookDate.split("T")[0] === today);
+    const todayAppointments = appointments.filter(appt =>  appt.BookDate.split("T")[0] === today && [username].includes(appt.doctorName));
     setTodayAppointment(todayAppointments);
 
 
@@ -123,27 +124,27 @@ const toYMD = (inputDate) => {
 
 
 const getAppointments = async () => {
-  try {
-    const response = await axios.get(
-      `${API_BASE}/appointment/getUserAppointments/${userId}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    const allAppointments = response.data.appointments || [];
-
-    // Highlight only upcoming scheduled appointments
-    const upcoming = allAppointments
-      .filter(a => a.status === "scheduled")
-      .map(a => toYMD(a.BookDate));  // Convert to YYYY-MM-DD
-
-    console.log("Highlight dates =>", upcoming);
-
-    setHighlightDates(upcoming);
-    setAppointmentData(allAppointments);
-
-  } catch (err) {
-    console.log("Error fetching appointments:", err);
-  }
+//   try {
+//     const response = await axios.get(
+//       `${API_BASE}/appointment/getUserAppointments/${userId}`,
+//       { headers: { Authorization: `Bearer ${token}` } }
+//     );
+//
+//     const allAppointments = response.data.appointments || [];
+//
+//     // Highlight only upcoming scheduled appointments
+//     const upcoming = allAppointments
+//       .filter(a => a.status === "scheduled")
+//       .map(a => toYMD(a.BookDate));  // Convert to YYYY-MM-DD
+//
+//     console.log("Highlight dates =>", upcoming);
+//
+//     setHighlightDates(upcoming);
+//     setAppointmentData(allAppointments);
+//
+//   } catch (err) {
+//     console.log("Error fetching appointments:", err);
+//   }
 };
 
 
@@ -213,10 +214,11 @@ useEffect(() => {
   return (
 
 
-    <div className="flex min-h-screen bg-gray-100">
+   <div className="flex flex-col lg:flex-row min-h-screen bg-gray-100">
 
       {/* LEFT SIDEBAR */}
-      <aside className="w-64 bg-white/80 backdrop-blur-md shadow-xl text-white flex flex-col p-6">
+      <aside className="w-full lg:w-64 bg-white/80 backdrop-blur-md shadow-xl text-white flex flex-col p-4 lg:p-6">
+
         <div className="flex flex-col items-center">
         <div className="relative group flex flex-col items-center">
 
@@ -291,7 +293,8 @@ useEffect(() => {
 
 
    {/* MIDDLE SECTION */}
-  <main className="flex-1 p-10 grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-100 min-h-screen">
+  <main className="flex-1 p-4 sm:p-6 lg:p-10 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 bg-slate-100">
+
 
     {/* ===== Today Appointment ===== */}
     <div className="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-gray-100 w-full">
@@ -419,7 +422,8 @@ useEffect(() => {
 
 
       {/* RIGHT SECTION */}
-      <aside className="w-[380px] p-10 space-y-6">
+      <aside className="w-full lg:w-[380px] p-4 sm:p-6 lg:p-10 space-y-6">
+
 
 
         <h2 className="font-bold  text-2xl text-center text-blue-800">Appointment Details</h2>
