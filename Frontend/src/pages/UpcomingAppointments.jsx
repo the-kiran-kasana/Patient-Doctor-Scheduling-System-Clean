@@ -16,7 +16,7 @@ export default function UpcomingAppointments() {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/showAppointment`, {
+        const res = await axios.get(`${API_BASE}/appointment/showAppointment`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 

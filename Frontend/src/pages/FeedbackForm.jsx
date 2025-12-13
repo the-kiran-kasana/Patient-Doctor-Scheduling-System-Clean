@@ -16,7 +16,7 @@ export default function FeedbackForm() {
   // Fetch only logged-in user's feedback
   const fetchFeedbacks = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/my`, {
+      const res = await axios.get(`${API_BASE}/feedback/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setFeedbacks(res.data.feedbacks);R
@@ -35,7 +35,7 @@ export default function FeedbackForm() {
 
     try {
       await axios.post(
-        `${API_BASE}/review`,
+        `${API_BASE}/feedback/review`,
         { rating, review, doctorId }, // doctorId required
         {
           headers: { Authorization: `Bearer ${token}` },
