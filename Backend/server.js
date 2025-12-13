@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 6060;
 app.use(cors());
 connectDB();
 
-//connectRabbit();
+connectRabbit();
 
 app.use(express.json());
 
