@@ -11,7 +11,7 @@ export default function FeedbackForm() {
 
   const token = localStorage.getItem("token");
   const doctorId = localStorage.getItem("doctorId"); // MUST BE SET when viewing doctor
-  const API_BASE = "http://localhost:6060/feedback";
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
   // Fetch only logged-in user's feedback
   const fetchFeedbacks = async () => {

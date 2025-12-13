@@ -5,7 +5,7 @@ export default function DoctorFeedback({ doctorId }) {
   const [feedbacks, setFeedbacks] = useState([]);
   const [avgRating, setAvgRating] = useState(0);
   const token = localStorage.getItem("token");
-  const API_BASE = "http://localhost:6060/feedback";
+  const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const fetchFeedback = async () => {
