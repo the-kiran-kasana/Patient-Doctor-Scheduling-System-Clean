@@ -51,7 +51,7 @@ app.use(cors({
 
 
 
-cron.schedule("*/5 * * * *", async () => {
+cron.schedule("*/45 * * * *", async () => {
   try {
     const now = new Date();
 
