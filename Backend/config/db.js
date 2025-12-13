@@ -1,13 +1,17 @@
-const mongoose = require("mongoose")
-require('dotenv').config()
+const mongoose = require("mongoose");
 
 const connectDB = async () => {
-   try{
-       await mongoose.connect(process.env.MONGODB_URL_CLOUD);
-       console.log("nodejs is connected to cloud mongoDB");
-   }catch(err){
-       console.log("nodejs is not connected to mongoDB");
-   }
-}
+  try {
+    const mongoURL =
+      process.env.NODE_ENV === "production"
+        ? process.env.MONGODB_URL_CLOUD
+        : process.env.MONGODB_URL_LOCAL;
 
-module.exports = {connectDB};
+    await mongoose.connect(mongoURL);
+    console.log("✅ MongoDB connected");
+  } catch (err) {
+    console.error("❌ MongoDB connection failed:", err.message);
+  }
+};
+
+module.exports = { connectDB };
