@@ -79,14 +79,12 @@ ernetes ready
 <h2>🧰 Tech Stack</h2>
 
 <ul>
-  <li><strong>Backend:</strong> Node.js / Spring Boot / Go</li>
-  <li><strong>Database:</strong> PostgreSQL / MongoDB</li>
-  <li><strong>Cache:</strong> Redis</li>
-  <li><strong>Queue:</strong> Kafka / RabbitMQ</li>
+  <li><strong>Backend:</strong> Node.js</li>
+  <li><strong>Database:</strong> MongoDB</li>
   <li><strong>Search:</strong> Elasticsearch</li>
   <li><strong>Auth:</strong> OAuth2, JWT</li>
   <li><strong>Analytics:</strong> Kibana / Grafana</li>
-  <li><strong>Deployment:</strong> Docker, Kubernetes</li>
+  <li><strong>Deployment:</strong> vercel</li>
 </ul>
 
 
